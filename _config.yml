@@ -3,13 +3,13 @@
 #
 
 # Name of your site (displayed in the header)
-name: Your Name
+name: Artan Zandian
 
 # Short bio or description (displayed in the header)
-description: Web Developer from Somewhere
+description: Data Science | Machine Learning | Deep Learning
 
 # URL of your avatar or profile pic (you could use your GitHub profile pic)
-avatar: https://raw.githubusercontent.com/barryclark/jekyll-now/master/images/jekyll-logo.png
+avatar: https://avatars.githubusercontent.com/u/74034506?v=4
 
 #
 # Flags below are optional
@@ -18,16 +18,16 @@ avatar: https://raw.githubusercontent.com/barryclark/jekyll-now/master/images/je
 # Includes an icon in the footer for each username you enter
 footer-links:
   dribbble:
-  email:
+  email: artankhan@gmail.com
   facebook:
   flickr:
-  github: barryclark/jekyll-now
+  github: artanzand
   instagram:
-  linkedin:
+  linkedin: artanz/
   pinterest:
   rss: # just type anything here for a working RSS icon
-  twitter: jekyllrb
-  stackoverflow: # your stackoverflow profile, e.g. "users/50476/bart-kiers"
+  twitter: ArtanZandian
+  stackoverflow: /users/17719442/artan-zandian
   youtube: # channel/<your_long_string> or user/<user-name>
   googleplus: # anything in your profile username that comes after plus.google.com/
 
