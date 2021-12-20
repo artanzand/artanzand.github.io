@@ -2,7 +2,7 @@
 layout: post
 title: Setting up Nvidia Jetson Nano
 author: Artan Zandian
-date: Dec 24, 2021
+date: Dec 20, 2021
 ---
 
 Recently I had my hands on [Jetson Nano 2GB Developer Kit](https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-nano/education-projects/) introduced by Nvidia in Oct 2020 as a successor to the original [Jetson Nano Developer Kit](https://developer.nvidia.com/embedded/jetson-nano-developer-kit) with 4GB of RAM. Despite the difference in memory size, number of ports and power supply, the two kits almost offer the same performance using an identical 128-core NVIDIA Maxwell GPU. See below for more detail:
