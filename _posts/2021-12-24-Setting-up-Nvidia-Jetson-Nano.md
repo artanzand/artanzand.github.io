@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Best Setup for Nvidia Jetson Nano
+title: Setting up Nvidia Jetson Nano
 author: Artan Zandian
 date: Dec 24, 2021
 ---
