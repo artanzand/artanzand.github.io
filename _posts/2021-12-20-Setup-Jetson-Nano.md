@@ -23,9 +23,9 @@ Recently I got my hands on [Jetson Nano 2GB Developer Kit](https://www.nvidia.co
 
 ## Default Setup
 ------
-<center><img src="https://github.com/artanzand/artanzand.github.io/blob/master/images/original.PNG" width="600"></center>
-<center><img src="https://github.com/artanzand/artanzand.github.io/blob/master/images/original.PNG"></center>
-<center><img src="https://github.com/artanzand/artanzand.github.io/blob/master/images/original.PNG" width="400"></center>
+<center><img src="images/original.PNG" width="600"></center>
+<center><img src=images/original.PNG></center>
+<center><img src="./images/original.PNG" width="400"></center>
 <br>
 ```
 ssh <username>@192.168.55.1
