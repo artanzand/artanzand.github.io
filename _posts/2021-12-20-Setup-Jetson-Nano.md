@@ -21,12 +21,9 @@ Recently I got my hands on [Jetson Nano 2GB Developer Kit](https://www.nvidia.co
 
 <br>  
 
-## Default Setup
+## Default Setup - USB Data Cable
 
 ![_config.yml]({{ site.baseurl }}/images/original.PNG)
-<center><img src="images/original.PNG" width="600"></center>
-<center><img src=images/original.PNG></center>
-<center><img src="./images/original.PNG" width="400"></center>
 <br>
 ```
 ssh <username>@192.168.55.1
@@ -34,7 +31,7 @@ ssh <username>@192.168.55.1
 
 <br> 
 
-## Preferred Setup - Ethernet
+## Proposed Setup - Ethernet
 
 <br>
 ![_config.yml]({{ site.baseurl }}/images/preferred.PNG)
