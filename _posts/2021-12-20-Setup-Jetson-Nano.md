@@ -23,8 +23,10 @@ Recently I got my hands on [Jetson Nano 2GB Developer Kit](https://www.nvidia.co
 
 ## Default Setup
 ------
-![default_setup](../images/original.png)
-
+<center><img src="../images/original.png" width="600"></center>
+<center><img src="../images/original.png" width="200"></center>
+<center><img src="../images/original.png" width="700"></center>
+<br>
 ```
 ssh <username>@192.168.55.1
 ```
@@ -33,7 +35,8 @@ ssh <username>@192.168.55.1
 
 ## Preferred Setup - Ethernet
 ---
-<img src=../images/preferred.png></img>
+<center><img src="../images/preferred.png" width="400"></center>
+<br>
 
 ```
 ifconfig
