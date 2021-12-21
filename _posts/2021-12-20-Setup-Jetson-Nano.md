@@ -25,7 +25,7 @@ Recently I got my hands on [Jetson Nano 2GB Developer Kit](https://www.nvidia.co
 
 ![_config.yml]({{ site.baseurl }}/images/original.PNG)
 <br>
-```
+```console
 ssh <username>@192.168.55.1
 ```
 
@@ -37,18 +37,18 @@ ssh <username>@192.168.55.1
 ![_config.yml]({{ site.baseurl }}/images/preferred.PNG)
 <br>
 
-```
+```console
 ifconfig
 ```
 
 
 Replace the `<username>` and `<ethernet-ip>` with the Linux username and the actual IP acquired from the command above. After this, you will be prompted to enter you Linux password.
-```
+```console
 ssh <username>@<ethernet-ip>
 ```
 Once remotely connected to Jetson Nano using the secure SSH connection, we will need a command line script to start Jupyter Lab on our remote machine. The next step is a one-time-only command to save the script to a shell file. We are adding a 4GB memory swap to compensate for the lower RAM in Jetson Nano 2GB. At the moment the latest version of `dli-nano-ai` is `v2.0.1-r32.6.1` and it is recommended that [NVIDIA NGC cloud page](https://catalog.ngc.nvidia.com/orgs/nvidia/teams/dli/containers/dli-nano-ai) is consulted for the latest image tag.
 
-```
+```console
 # create a reusable script
 echo "sudo docker run --runtime nvidia -it --rm --network host \
     --memory=500M --memory-swap=4G \
@@ -62,7 +62,7 @@ chmod +x docker_dli_run.sh
 ```
 
 Once executed we could run the stript below to fire up Jupyter Lab.
-```
+```console
 # run the script
 ./docker_dli_run.sh
 ```
