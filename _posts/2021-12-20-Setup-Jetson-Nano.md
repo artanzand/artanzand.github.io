@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Setting up Nvidia Jetson Nano
+title: Preferred Setup for NVIDIA Jetson Nano
 author: Artan Zandian
 date: Dec 20, 2021
 ---
@@ -9,7 +9,7 @@ Recently I had my hands on [Jetson Nano 2GB Developer Kit](https://www.nvidia.co
 
 
 
-|       |JETSON NANO 2GB |JETSON NANO (4GB) |
+|       |JETSON NANO 2GB |JETSON NANO |
 |-------|-----------|------------------ |
 |Memory |2 GB |4 GB|
 |Camera Connector|1x CSI|2x CSI|
@@ -19,13 +19,15 @@ Recently I had my hands on [Jetson Nano 2GB Developer Kit](https://www.nvidia.co
 |Wireless Connectivity	|USB wireless adapter included |	M.2 Key E slot (adapter not included)|
 |Price	| USD$59 |	USD$99|
 
-<br></br>
+<br>  
+
 ## Default Setup
 ```
 ssh <username>@192.168.55.1
 ```
 
-<br></br>
+<br> 
+
 ## Preferred Setup - Ethernet
 ```
 ifconfig
