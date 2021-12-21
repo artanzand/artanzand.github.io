@@ -22,8 +22,8 @@ Recently I got my hands on [Jetson Nano 2GB Developer Kit](https://www.nvidia.co
 <br>  
 
 ## Default Setup
-------
-![_config.yml]({{ site.baseurl }}/original.PNG)
+
+![_config.yml]({{ site.baseurl }}/images/original.PNG)
 <center><img src="images/original.PNG" width="600"></center>
 <center><img src=images/original.PNG></center>
 <center><img src="./images/original.PNG" width="400"></center>
@@ -37,7 +37,7 @@ ssh <username>@192.168.55.1
 ## Preferred Setup - Ethernet
 
 <br>
-<center>![_config.yml]({{ site.baseurl }}/preferred.PNG)</center>
+![_config.yml]({{ site.baseurl }}/images/preferred.PNG)
 <br>
 
 ```
