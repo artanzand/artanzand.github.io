@@ -36,7 +36,7 @@ ssh <username>@192.168.55.1
 ## Preferred Setup - Ethernet
 
 <br>
-<center><img src = "https://github.com/artanzand/artanzand.github.io/tree/master/images/preferred.png"></center>
+<center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/images/preferred.PNG"></center>
 <br>
 
 ```
