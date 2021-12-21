@@ -5,7 +5,7 @@ author: Artan Zandian
 date: Dec 20, 2021
 ---
 
-Recently I had my hands on [Jetson Nano 2GB Developer Kit](https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-nano/education-projects/) introduced by Nvidia in Oct 2020 as a successor to the original [Jetson Nano Developer Kit](https://developer.nvidia.com/embedded/jetson-nano-developer-kit) with 4GB of RAM. Despite the difference in memory size, number of ports and power supply, the two kits almost offer the same performance using an identical 128-core NVIDIA Maxwell GPU. See below for more detail:
+Recently I got my hands on [Jetson Nano 2GB Developer Kit](https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-nano/education-projects/) introduced by Nvidia in Oct 2020 as a successor to the original [Jetson Nano Developer Kit](https://developer.nvidia.com/embedded/jetson-nano-developer-kit) with 4GB of RAM. Despite the difference in memory size, number of ports and power supply, the two kits almost offer the same performance using an identical 128-core NVIDIA Maxwell GPU. See below for more detail:
 
 
 
@@ -22,6 +22,8 @@ Recently I had my hands on [Jetson Nano 2GB Developer Kit](https://www.nvidia.co
 <br>  
 
 ## Default Setup
+------
+
 ```
 ssh <username>@192.168.55.1
 ```
@@ -29,6 +31,8 @@ ssh <username>@192.168.55.1
 <br> 
 
 ## Preferred Setup - Ethernet
+---
+
 ```
 ifconfig
 ```
@@ -38,7 +42,7 @@ Replace the `<username>` and `<ethernet-ip>` with the Linux username and the act
 ```
 ssh <username>@<ethernet-ip>
 ```
-Once remotely connected to Jetson Nano using the secure SSH connection, we will need a command line script to start Jupyter Lab on our remote machine. The next step is a one-time-only command to save the script to a shell file.
+Once remotely connected to Jetson Nano using the secure SSH connection, we will need a command line script to start Jupyter Lab on our remote machine. The next step is a one-time-only command to save the script to a shell file. We are adding a 4GB memory swap to compensate for the lower RAM in Jetson Nano 2GB.
 
 ```
 # create a reusable script
@@ -58,3 +62,6 @@ Once executed we could run the stript below to fire up Jupyter Lab.
 # run the script
 ./docker_dli_run.sh
 ```
+
+## Conclusion
+---
