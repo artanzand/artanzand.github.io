@@ -1,3 +1,10 @@
+---
+layout: post
+title: Activation Functions - Which to Use When
+author: Artan Zandian
+date: Dec 11, 2021
+---
+
 In this post I will be going over various activation functions to explain their use cases and where they would apply the best.
 
 |	|ReLU|	Logistic| Sigmoid|	tanh|	
