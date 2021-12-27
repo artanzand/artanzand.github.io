@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Regularization Through SciKitLearn
+title: Regularization Through ScikitLearn
 author: Artan Zandian
 date: Nov 29, 2021
 ---

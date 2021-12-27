@@ -68,12 +68,12 @@ echo "sudo docker run --runtime nvidia -it --rm --network host \
 chmod +x docker_dli_run.sh
 ```
 
-Once executed we could run the stript below to fire up Jupyter Lab.
+Once executed we could run the script below to fire up Jupyter Lab.
 ```console
 # run the script
 ./docker_dli_run.sh
 ```
 
 ## Further Improvement
-Although the above setup provides much flexibility in regards to the remote access, it is limited to both machines (host and client) being on the same local network. This is enough for majority of the users, but we could further explore port forwarding in our router in case an access from outside of the local area was required.  
+Although the above setup provides much flexibility in regards to the remote access, it is limited to both machines (host and client) being on the same local network. This is enough for majority of the users, but we could further explore port forwarding in our router (modem) in case an access from outside of the local network area was required.  
 
