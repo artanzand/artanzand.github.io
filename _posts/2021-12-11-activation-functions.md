@@ -51,7 +51,7 @@ $$sigmoid(z) = \frac{1}{1 + e^{-z}}$$
 The Hyperbolic Tangent function or in short `Tanh` (read "Tan + H") looks like a stretched version of Sigmoid in a sense that it maps the input to a range betwee -1 and 1. The biggest advantange of tanh over sigmoid is that it is centerd around 0 (maps zero to zero), and because of that it typically performs better than sigmoid ([Deep Learning, 2016](https://www.deeplearningbook.org/)).
 $$tanh(z) = \frac{e^{z} - e^{-z}}{e^{z} + e^{-z}}$$
 ### ReLU
-Due to the simplicity and low computation cost, Rectified Linear Unit is the most commonly used activation function in deep neural networks (i.e. more than 50 layers). Another big advantage of ReLU is that unlike sigmoid and tanh it is less susceptible to the [vanishing gradients problem](https://en.wikipedia.org/wiki/Vanishing_gradient_problem) which limit the training of deep networks.  
+Due to the simplicity and low computation cost, Rectified Linear Unit is the most commonly used activation function in deep neural networks (deep in contrast to shallow networks with two hidden layers). Another big advantage of ReLU is that unlike sigmoid and tanh it is less susceptible to the [vanishing gradients problem](https://en.wikipedia.org/wiki/Vanishing_gradient_problem) which limit the training of deep networks. ReLU was motivated from a biological analogy with neurons where neurons would only be activated if they pass a certain threshold.   
 This function maps negative numbers to zero and applies the identity function to the positive numbers. This function is not differentiable at 0, but this is not a real problem due to the very low probability of getting an output value of exactly zero.  
 $$ReLU(z) = max(0, z)$$
 ### Leaky ReLU
@@ -60,9 +60,9 @@ $$LReLU(z) = max(0.01z, z)$$
 
 ## Choosing Activation Functions for Hidden Layer
 
-The first rule of thumb is that the same activation function is used for all hidden layers. This is common in practice to limit the number of variables that need to be optimized (e.g. number of layers, number of nodes, dropout layers, etc.).  
+The first rule of thumb is that the same activation function is used for all hidden layers. This is common in practice to limit the number of hyperparameters that need to be optimized (e.g. number of layers, number of nodes, learning rate, number of iterations, regularization techniques like dropout layers, momentum, batch size, etc.).  
 
-In modern neural networks, it is recommended to use ReLU as a default activation function for hidden layers ([Deep Learning, 2016](https://www.deeplearningbook.org/)).
+In modern neural networks, it is recommended to use ReLU as a default activation function for hidden layers ([Deep Learning, 2016](https://www.deeplearningbook.org/)). Sigmoid and tanh were very popular till 2010, but are rarely used today with the advent of faster functions like ReLU (watch [this](https://www.youtube.com/watch?v=aircAruvnKk&list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi&index=1&ab_channel=3Blue1Brown) for comparison of the two).
 
 ## Activation Fuctions for Output Layer
 
@@ -72,4 +72,5 @@ In modern neural networks, it is recommended to use ReLU as a default activation
 <br>
 _References:_  
 
-[[1](https://www.cs.ryerson.ca/~aharley/neural-networks/)] Williams, David P. "Demystifying deep convolutional neural networks for sonar image classification." (2019).
+[[1](https://www.cs.ryerson.ca/~aharley/neural-networks/)] Williams, David P. "Demystifying deep convolutional neural networks for sonar image classification." (2019).  
+[[2](https://www.deeplearningbook.org/)] Deep Learning (Ian J. Goodfellow, Yoshua Bengio and Aaron Courville), MIT Press, 2016.
