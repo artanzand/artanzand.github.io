@@ -41,19 +41,19 @@ Another well-known disadvantage, specially for Windows users, is the security co
 ![_config.yml]({{ site.baseurl }}/images/preferred.PNG)
 <br>
 
-In order to solve the above disadvantage, and to provide the freedom of having a portable device, I suggest connecting Jetson nano to the modem directly using an ethernet cable and then remoting into jetson nano using local wifi connection. Before finalizing the set up through a headless connection, we will need to connect our monitor, keyboard and mouse directly to Jetson nano in order to get the ethernet IP. The below command on Linux will give all available IP's for Jetson nano:
+In order to solve the above disadvantage, and to provide the freedom of having a portable device, I suggest connecting Jetson nano to the modem directly using an ethernet cable and then remoting into jetson nano using local wifi connection. Before finalizing the setup through a headless connection, we will need to connect our monitor, keyboard and mouse directly to Jetson nano in order to get the ethernet IP. The below command on Linux will give all available IP's for Jetson nano:
 ```console
 ifconfig
 ```
-From the output of the above command we are looking for a section that starts with `eth0`. The second line in this section contains the ethernet IP followed by ether (having a pattern similar to `ether xxx.xxx.x.xx`).
+From the output of the above command we are looking for a section that starts with `eth0`. The second line in this section contains the ethernet IP followed by `ether` (having a pattern similar to `ether xxx.xxx.x.xx`).
 
-> Jetson nano 2GB has an advantage over Jetson nano which is having a USB wireless adapter included in the package. Using this, we could run the same commad as above after connecting Jetson Nano 2GB to the WiFi network. This time we will be looking for a section starting with `wlan0` and an internet IP which follows by inet (having a pattern similar to `inet xxx.xxx.x.xx`). Using the WiFi adapter we don't need the ethernet cable anymore. Even better!
+> Jetson nano 2GB has an advantage over Jetson nano which is having a USB wireless adapter included in the package. Using this, we could run the same commad as above after connecting Jetson Nano 2GB to the WiFi network. This time we will be looking for a section starting with `wlan0` and an internet IP which follows by `inet` (having a pattern similar to `inet xxx.xxx.x.xx`). Using the WiFi adapter we don't need the ethernet cable anymore. Even better!
 
-The next steps are straight forward after acquiring either of the above IP's. We will replace the `<username>` and `<ethernet-IP>` (or `inet-IP` in case of Jetson nano 2GB) with the Linux username and the IP acquired from the command above. After this, you will be prompted to enter you Linux password.
+The next steps are straight forward. After acquiring either of the above IP's we will replace the `<username>` and `<ethernet-IP>` (or `inet-IP` in case of Jetson nano 2GB) with the Linux username and the IP acquired from the command above. After this, you will be prompted to enter your Linux password.
 ```console
 ssh <username>@<ethernet-IP>
 ```
-Once remotely connected to Jetson Nano using the secure SSH connection, we will need a command line script to start Jupyter Lab on our remote machine. The next step is a one-time-only command to save the script to a shell file. We are adding a 4GB memory swap to compensate for the lower RAM in Jetson Nano 2GB. At the moment the latest version of `dli-nano-ai` is `v2.0.1-r32.6.1` and it is recommended that [NVIDIA NGC cloud page](https://catalog.ngc.nvidia.com/orgs/nvidia/teams/dli/containers/dli-nano-ai) is consulted for the latest image tag.
+Once remotely connected to Jetson Nano using the secure SSH connection, we will need a command line script to start Jupyter Lab on our remote machine. The next step is a one-time-only command to save the script to an executable shell file. We are adding a 4GB memory swap to compensate for the lower RAM in Jetson Nano 2GB. At the moment the latest version of `dli-nano-ai` image is `v2.0.1-r32.6.1` and it is recommended that [NVIDIA NGC cloud page](https://catalog.ngc.nvidia.com/orgs/nvidia/teams/dli/containers/dli-nano-ai) is consulted for the latest image tag.
 
 ```console
 # create a reusable script
@@ -74,6 +74,6 @@ Once executed we could run the stript below to fire up Jupyter Lab.
 ./docker_dli_run.sh
 ```
 
-## Further steps for improvement
-Access to Jetson from anywhere else outside local
+## Further Improvement
+Although the above setup provides much flexibility in regards to the remote access, it is limited to both machines (host and client) being on the same local network. This is enough for majority of the users, but we could further explore port forwarding in our router in case an access from outside of the local area was required.
 ---
