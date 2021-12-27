@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Activation Functions - Which One to Use When
+title: Choosing Activation Functions for Deep Learning
 author: Artan Zandian
 date: Dec 11, 2021
 ---
@@ -52,14 +52,19 @@ The Hyperbolic Tangent function or in short `Tanh` (read "Tan + H") looks like a
 $$tanh(z) = \frac{e^{z} - e^{-z}}{e^{z} + e^{-z}}$$
 ### ReLU
 Due to the simplicity and low computation cost, Rectified Linear Unit is the most commonly used activation function in deep neural networks (i.e. more than 50 layers). Another big advantage of ReLU is that unlike sigmoid and tanh it is less susceptible to the [vanishing gradients problem](https://en.wikipedia.org/wiki/Vanishing_gradient_problem) which limit the training of deep networks.  
-This function maps negative numbers to zero and applies an identity function to the positive numbers. 
+This function maps negative numbers to zero and applies the identity function to the positive numbers. This function is not differentiable at 0, but this is not a real problem due to the very low probability of getting an output value of exactly zero.  
+$$ReLU(z) = max(0, z)$$
 ### Leaky ReLU
+As mentioned above ReLU maps all negative values to zero. To overcome this, Leaky ReLU shrinks the negative value by a very small multiplier like 0.01. ReLU is usually introduced at later stages as the size of the multiplier is a hyperparameter which could be optimized to improve model performance.
+$$LReLU(z) = max(0.01z, z)$$
 
+## Choosing Activation Functions for Hidden Layer
 
+The first rule of thumb is that the same activation function is used for all hidden layers. This is common in practice to limit the number of variables that need to be optimized (e.g. number of layers, number of nodes, dropout layers, etc.).  
 
+In modern neural networks, it is recommended to use ReLU as a default activation function for hidden layers ([Deep Learning, 2016](https://www.deeplearningbook.org/)).
 
-
-## Activation Fuction for Output Layer
+## Activation Fuctions for Output Layer
 
 
 <br>
