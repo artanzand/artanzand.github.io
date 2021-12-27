@@ -15,21 +15,42 @@ The [activation function](https://en.wikipedia.org/wiki/Activation_function) `g(
 The key takeaways from this post are:
 - The activation function selection is highly dependant on whether we are applying them to a hidden layer or the output layer
 - The type of prediction problem limits the type of activation functions as well as the loss function to use for the output layer.
-- The best starting point for activation functions in design of neural networks.
+- The best starting point for activation functions in design of neural networks  
 <br>
 ## Hidden or Output?
-The type of the activation function in a hidden layer controls how our model learns the weights and biases from the training dataset. For this reason, we are more interested on the performance (how well it learns the parameters) and speed (how fast each epoch will take). On the other hand, the activation function in the output (last) layer controls the translation of the results to the type of prediction that we expect the model to make (e.g. classification or regression).
+The type of the activation function in a hidden layer controls how our model learns the weights and biases from the training dataset. For this reason, we are more interested on the performance (how well it learns the parameters) and speed (how fast each epoch will take).  
 
-|	|ReLU   |Leaky ReLU  |Sigmoid  |tanh   |
-|-----|---------|----------|---------|-------|
-Fast to compute?|	YES	|YES |	NO |	NO |
-|Simple derivative?|	YES	|YES|	YES |	YES|
-|Continuous?|	NO|	NO |	YES|	YES |
-|Region of uncertainty?  |	NO |	YES |	YES|	YES|
-|Directional derivative? |	NO |	YES |	YES|	YES|
-* inspired by [Williams, David P. (2019)](https://www.cs.ryerson.ca/~aharley/neural-networks/)
+|	                     |ReLU  |Leaky ReLU |Sigmoid  |tanh |
+|------------------------|------|-----------|---------|-----|
+|Fast to compute?        |YES	|YES        |NO       |NO   |
+|Simple derivative?      |YES	|YES        |YES      |YES  |
+|Continuous?             |NO    |NO         |YES      |YES  |
+|Region of uncertainty?  |YES   |YES        |YES      |YES  |
+|Directional derivative? |YES   |YES        |YES      |YES  |
+* inspired by [Williams, David P. (2019)](https://www.cs.ryerson.ca/~aharley/neural-networks/)[1]
+
+On the other hand, the activation function in the output (last) layer controls the translation of the results to the type of prediction that we expect the model to make (e.g. classification or regression).
+
+|	                        |Linear |Sigmoid |Softmax |
+|---------------------------|-------|--------|--------|
+|Regression                 |YES	|NO      |NO      |
+|Two-class Classification   |NO  	|YES     |NO      |
+|Multi-class Classification |NO     |YES     |YES     |
+
+## Activation Fuction for Hidden Layers
+### Sigmoid
+
+### tanh
+
+### ReLU
+
+### Leaky ReLU
 
 
+
+
+
+## Activation Fuction for Output Layer
 
 
 <br>
