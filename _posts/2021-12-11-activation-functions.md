@@ -29,16 +29,20 @@ On the other hand, the activation function in the output (last) layer controls t
 
 <center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/output_activation.PNG?raw=True"></center>
 <br>
+
 ## Activation Fuctions for Hidden Layers
 In forward propagation we are using a linear function `(wX + b)` to calculate the `z` value for each node in a layer. Therefore, in order to allow the neural network to learn more complex patterns we will need a nonlinear activation function. This function should be differentiable to allow calculation of gradients in backpropagation.
 
 image goes here with 4 functions
 ### Sigmoid
 Also referred to as logistic function, this function resembles an S curve and maps the input values to a real value between 0 and 1. This function has a high computation cost but since it maps 0 to 0.5 and large positive and large negative numeers to 1 and 0 respectively, it is perfect for cases where the output is required to be translated to soft (percentage) or hard (0/1) prediction.  
+{% raw %} 
 $$sigmoid(z) = \frac{1}{1 + e^{-z}}$$
+{% endraw %}
 
 ### Tanh
-The Hyperbolic Tangent function or in short `Tanh` (read "Tan + H") looks like a stretched version of Sigmoid in a sense that it maps the input to a range betwee -1 and 1. The biggest advantange of tanh over sigmoid is that it is centerd around 0 (maps zero to zero), and because of that it typically performs better than sigmoid ([Deep Learning, 2016](https://www.deeplearningbook.org/)).
+The Hyperbolic Tangent function or in short `Tanh` (read "Tan + H") looks like a stretched version of Sigmoid in a sense that it maps the input to a range betwee -1 and 1. The biggest advantange of tanh over sigmoid is that it is centerd around 0 (maps zero to zero), and because of that it typically performs better than sigmoid ([Deep Learning, 2016](https://www.deeplearningbook.org/)).  
+
 $$tanh(z) = \frac{e^{z} - e^{-z}}{e^{z} + e^{-z}}$$
 ### ReLU
 Due to the simplicity and low computation cost, Rectified Linear Unit is the most commonly used activation function in deep neural networks (deep in contrast to shallow networks with two hidden layers). Another big advantage of ReLU is that unlike sigmoid and tanh it is less susceptible to the [vanishing gradients problem](https://en.wikipedia.org/wiki/Vanishing_gradient_problem) which limit the training of deep networks. ReLU was motivated from a biological analogy with neurons where neurons would only be activated if they pass a certain threshold.   
@@ -83,7 +87,7 @@ The decision tree below demonstrates the common choices of activation function f
 The below code summarizes the general layout of designing a neural network using TensorFlow and the arguments where the above activation and loss functions could be applied to. The below codes assumes that the input data is already split and scaled.  
 
 ```python
-from tensorflow.kera.models import Sequential
+from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 
 # Mutually exclusive multi-class classification

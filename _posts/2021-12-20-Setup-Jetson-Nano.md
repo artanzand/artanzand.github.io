@@ -9,16 +9,7 @@ Recently I got my hands on [Jetson Nano 2GB Developer Kit](https://www.nvidia.co
 See below for more detail:
 
 
-
-|       |JETSON NANO 2GB |JETSON NANO |
-|-------|-----------|------------------ |
-|Memory |2 GB |4 GB|
-|Camera |1x CSI Connector|2x CSI Connector|
-|Power	|USB-C	|Micro-USB or DC barrel connector|
-|USB	|1x USB 3.0 Type A, 2x USB 2.0 Type A, 1x Micro-USB 2.0 |	4x USB 3.0 Type A, 1x Micro-USB 2.0|
-| Display	|1x HDMI	|1x HDMI, 1x DP
-|Wireless |USB wireless adapter included |	M.2 Key E slot (adapter not included)|
-|Price	| USD$59 |	USD$99|
+<center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/nano_compare.PNG?raw=True"></center>
 
 <br>  
 
