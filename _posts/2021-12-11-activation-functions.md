@@ -57,15 +57,44 @@ $$ReLU(z) = max(0, z)$$
 ### Leaky ReLU
 As mentioned above ReLU maps all negative values to zero. To overcome this, Leaky ReLU shrinks the negative value by a very small multiplier like 0.01. ReLU is usually introduced at later stages as the size of the multiplier is a hyperparameter which could be optimized to improve model performance.
 $$LReLU(z) = max(0.01z, z)$$
+<br>
 
 ## Choosing Activation Functions for Hidden Layer
 
-The first rule of thumb is that the same activation function is used for all hidden layers. This is common in practice to limit the number of hyperparameters that need to be optimized (e.g. number of layers, number of nodes, learning rate, number of iterations, regularization techniques like dropout layers, momentum, batch size, etc.).  
+The first rule of thumb is that the same activation function is used for all hidden layers. This is common in practice to limit the number of hyperparameters that need to be optimized (e.g. number of layers, number of nodes, learning rate, number of iterations, regularization parameters like dropout layers, momentum, batch size, etc.).  
 
-In modern neural networks, it is recommended to use ReLU as a default activation function for hidden layers ([Deep Learning, 2016](https://www.deeplearningbook.org/)). Sigmoid and tanh were very popular till 2010, but are rarely used today with the advent of faster functions like ReLU (watch [this](https://www.youtube.com/watch?v=aircAruvnKk&list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi&index=1&ab_channel=3Blue1Brown) for comparison of the two).
+In modern neural networks, it is recommended to use ReLU as a default activation function for hidden layers ([Deep Learning, 2016](https://www.deeplearningbook.org/)) espcecially for Multilayer Perceptron (MLP) and Convolutional Neural Network (CNN). Sigmoid and tanh were very popular till 2010, but are rarely used today with the advent of faster functions like ReLU (watch [this](https://www.youtube.com/watch?v=aircAruvnKk&list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi&index=1&ab_channel=3Blue1Brown) for intuition on computation cost).
 
+Despite being common for majority of models, sigmoid and tanh are still used for Recurrent Neural Networks (RNN).  
+<br>
 ## Activation Fuctions for Output Layer
+Since the output layer directly generates a prediction, the type of activation fuction is highly dependant on our prediction type. The three main activation functions are Linear, Sigmoid (Logistic) and Softmax. 
+### Linear function
+This function is also referred to as Identity function and simply returns the input value directly without changing the weighted sum of the input. Because of this bahaviour, the activation functio is perfect for regression problems where the prediction could take any value.
+$$g(z) = z$$
 
+### Softmax
+Softmax normalizes the output values so that all sum up to 1. This is analagous to normalizing probabilities in a distribution and each output value could be interpreted as the probability for that specific class. This function is very similar to the argmax function in Python in a sense that it selects only one class from the list of many classes. For this reason, this fuction is perfect for multi-class predictions where the classes are mutually exclusive.
+
+$$g(z) = \frac{e^z_i}{\Sigma_{j=1}^n e^z_j}$$
+
+## Choosing Activation Function for the Output Layer
+The decision tree below demonstrates the common choices of activation function for each prediction type. Since the prediction type is also closely tied to the loss (cost) fuction, I am also including the corresponding loss function used in the popular TensorFlow package used for deeplearning.
+
+<img>
+
+> Non-exclusive classes: Referes to case where the prediction could belong to more than one class. For example, we would pick the classes where output > 0.5  
+> Mutually exclusive classes: Referes to cases where the model will only pick one class as final prediction. For example, we would need to pick the one class with highest probability.
+
+<br>
+
+## Wrapping up: TensorFlow Code Snippet
+The below code summarizes the general layout of designing a neural network using TensorFlow and the arguments where the above activation and loss functions could be applied. The below codes assumes that the input data is already split and scaled.  
+
+```python
+from tensorflow.kera.models import Sequential
+from 
+```
 
 <br>
 <br>
