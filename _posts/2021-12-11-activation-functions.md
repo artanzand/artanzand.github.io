@@ -5,14 +5,14 @@ author: Artan Zandian
 date: Dec 11, 2021
 ---
 
-In this post I will be going over various activation functions to explain their use cases and where to apply them in our design of a neural network.  
+In this post I will be going over various activation functions to explain their use cases and where to apply them in our design of neural networks.  
 
-The [activation function](https://en.wikipedia.org/wiki/Activation_function) `g(z)` defines how the weighted sum of the input `z` for each layer is transformed to a range that is acceptable as an input for the next layer (or prediction output in case of the last layer). Activation functions come in many flavours with the majority of them being non-linear. We will discuss the four common activation functions (Sigmoid, tahn, ReLU and Leaky ReLU) for hidden layers as well as Softmax and Linear (Identity) activation for the output layer. Since the type of prediction problem also defines the loss function to be used, I will briefly mention the respective loss function in [TensorFlow](https://www.tensorflow.org/) when exploring the activation functions.
+The [activation function](https://en.wikipedia.org/wiki/Activation_function) `g(z)` defines how the weighted sum of the input `z` for each layer is transformed to a range that is acceptable as an input for the next layer (or prediction output in case of the last layer). Activation functions come in many flavours with the majority of them being non-linear. We will discuss the four common activation functions (Sigmoid, Tahn, ReLU and Leaky ReLU) for hidden layers as well as Softmax and Linear (Identity) activation for the output layer. Since the type of prediction problem also defines the loss function to be used, I will briefly mention the respective loss function in a [TensorFlow](https://www.tensorflow.org/) code snippet when exploring the activation functions.
 
 
 The key takeaways from this post are:
-- The activation function selection is highly dependant on whether we are applying them to a hidden layer or the output layer
-- The type of prediction problem limits the type of activation functions as well as the loss function to use for the output layer.
+- The activation function selection is highly dependant on whether we are applying them to a hidden layer or the output layer.
+- The type of prediction problem limits the choice of activation function as well as the loss function to be used for the output layer.
 - The best starting point for activation functions in design of neural networks  
 <br>
 
@@ -70,7 +70,8 @@ Despite being common for majority of models, sigmoid and tanh are still used for
 Since the output layer directly generates a prediction, the type of activation fuction is highly dependant on our prediction type. The three main activation functions are Linear, Sigmoid (Logistic) and Softmax. 
 ### Linear function
 This function is also referred to as Identity function and simply returns the input value directly without changing the weighted sum of the input. Because of this bahaviour, the activation functio is perfect for regression problems where the prediction could take any value.  
-$$g(z) = z$$  
+
+$$ g(z) = z $$  
 
 ### Softmax
 Softmax normalizes the output values so that all sum up to 1. This is analagous to normalizing probabilities in a distribution and each output value could be interpreted as the probability for that specific class. This function is very similar to the argmax function in Python in a sense that it selects only one class from the list of many classes. For this reason, this fuction is perfect for multi-class predictions where the classes are mutually exclusive.
