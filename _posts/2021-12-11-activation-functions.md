@@ -20,24 +20,14 @@ The key takeaways from this post are:
 ## Hidden or Output?  
 The type of the activation function in a hidden layer controls how our model learns the weights and biases from the training dataset. For this reason, we are more interested on the performance (how well it learns the parameters) and speed (how fast each epoch will take).  
 
-|	                      |ReLU  |Leaky ReLU |Sigmoid  |tanh |
-|-------------------------|------|-----------|---------|-----|
-|Fast to compute?         |YES	 |YES        |NO       |NO   |
-|Simple derivative?       |YES	 |YES        |YES      |YES  |
-|Continuous?              |NO    |NO         |YES      |YES  |
-|Region of uncertainty?   |YES   |YES        |YES      |YES  |
-|Directional derivative?  |YES   |YES        |YES      |YES  |
+<center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/activation_table.PNG?raw=True"></center>
 
  [1] inspired by [Williams, David P. (2019)](https://www.cs.ryerson.ca/~aharley/neural-networks/)
   
 
 On the other hand, the activation function in the output (last) layer controls the translation of the results to the type of prediction that we expect the model to make (e.g. classification or regression).
 
-|	                        |Linear  |Sigmoid  |Softmax |
-|---------------------------|--------|---------|--------|
-|Regression                 |YES	 |NO       |NO      |
-|Two-class Classification   |NO  	 |YES      |NO      |
-|Multi-class Classification |NO      |YES      |YES     |
+<center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/output_activation.PNG?raw=True"></center>
 <br>
 ## Activation Fuctions for Hidden Layers
 In forward propagation we are using a linear function `(wX + b)` to calculate the `z` value for each node in a layer. Therefore, in order to allow the neural network to learn more complex patterns we will need a nonlinear activation function. This function should be differentiable to allow calculation of gradients in backpropagation.
