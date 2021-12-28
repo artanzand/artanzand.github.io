@@ -36,21 +36,26 @@ In forward propagation we are using a linear function `(wX + b)` to calculate th
 image goes here with 4 functions
 ### Sigmoid
 Also referred to as logistic function, this function resembles an S curve and maps the input values to a real value between 0 and 1. This function has a high computation cost but since it maps 0 to 0.5 and large positive and large negative numeers to 1 and 0 respectively, it is perfect for cases where the output is required to be translated to soft (percentage) or hard (0/1) prediction.  
-{% raw %} 
+ 
 $$sigmoid(z) = \frac{1}{1 + e^{-z}}$$
-{% endraw %}
+
 
 ### Tanh
 The Hyperbolic Tangent function or in short `Tanh` (read "Tan + H") looks like a stretched version of Sigmoid in a sense that it maps the input to a range betwee -1 and 1. The biggest advantange of tanh over sigmoid is that it is centerd around 0 (maps zero to zero), and because of that it typically performs better than sigmoid ([Deep Learning, 2016](https://www.deeplearningbook.org/)).  
 
-$$tanh(z) = \frac{e^{z} - e^{-z}}{e^{z} + e^{-z}}$$
+$$tanh(z) = \frac{e^{z} - e^{-z}}{e^{z} + e^{-z}}$$  
+
 ### ReLU
 Due to the simplicity and low computation cost, Rectified Linear Unit is the most commonly used activation function in deep neural networks (deep in contrast to shallow networks with two hidden layers). Another big advantage of ReLU is that unlike sigmoid and tanh it is less susceptible to the [vanishing gradients problem](https://en.wikipedia.org/wiki/Vanishing_gradient_problem) which limit the training of deep networks. ReLU was motivated from a biological analogy with neurons where neurons would only be activated if they pass a certain threshold.   
 This function maps negative numbers to zero and applies the identity function to the positive numbers. This function is not differentiable at 0, but this is not a real problem due to the very low probability of getting an output value of exactly zero.  
-$$ReLU(z) = max(0, z)$$
+
+$$ReLU(z) = max(0, z)$$  
+
 ### Leaky ReLU
-As mentioned above ReLU maps all negative values to zero. To overcome this, Leaky ReLU shrinks the negative value by a very small multiplier like 0.01. ReLU is usually introduced at later stages as the size of the multiplier is a hyperparameter which could be optimized to improve model performance.
-$$LReLU(z) = max(0.01z, z)$$
+As mentioned above ReLU maps all negative values to zero. To overcome this, Leaky ReLU shrinks the negative value by a very small multiplier like 0.01. ReLU is usually introduced at later stages as the size of the multiplier is a hyperparameter which could be optimized to improve model performance.  
+
+$$LReLU(z) = max(0.01z, z)$$  
+
 <br>
 
 ## Choosing Activation Functions for Hidden Layer
@@ -64,13 +69,14 @@ Despite being common for majority of models, sigmoid and tanh are still used for
 ## Activation Fuctions for Output Layer
 Since the output layer directly generates a prediction, the type of activation fuction is highly dependant on our prediction type. The three main activation functions are Linear, Sigmoid (Logistic) and Softmax. 
 ### Linear function
-This function is also referred to as Identity function and simply returns the input value directly without changing the weighted sum of the input. Because of this bahaviour, the activation functio is perfect for regression problems where the prediction could take any value.
-$$g(z) = z$$
+This function is also referred to as Identity function and simply returns the input value directly without changing the weighted sum of the input. Because of this bahaviour, the activation functio is perfect for regression problems where the prediction could take any value.  
+$$g(z) = z$$  
 
 ### Softmax
 Softmax normalizes the output values so that all sum up to 1. This is analagous to normalizing probabilities in a distribution and each output value could be interpreted as the probability for that specific class. This function is very similar to the argmax function in Python in a sense that it selects only one class from the list of many classes. For this reason, this fuction is perfect for multi-class predictions where the classes are mutually exclusive.
 
-$$g(z) = \frac{e^z_i}{\Sigma_{j=1}^n e^z_j}$$
+$$g(z) = \frac{e^z_i}{\Sigma_{j=1}^n e^z_j}$$  
+
 
 ## Choosing Activation Function for the Output Layer
 The decision tree below demonstrates the common choices of activation function for each prediction type. Since the prediction type is also closely tied to the loss (cost) fuction, I am also including the corresponding loss function used in the popular TensorFlow package used for deeplearning.
@@ -78,7 +84,7 @@ The decision tree below demonstrates the common choices of activation function f
 <center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/output_layer.PNG?raw=True"></center>
 
 
-> Non-exclusive classes: Referes to case where the prediction could belong to more than one class. For example, we would pick the classes where output > 0.5 .   
+> Non-exclusive classes: Referes to case where the prediction could belong to more than one class. For example, we would pick the classes where output > 0.5   
 > Mutually exclusive classes: Referes to cases where the model will only pick one class as final prediction. For example, we would need to pick the one class with highest probability.
 
 <br>
