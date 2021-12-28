@@ -38,7 +38,7 @@ On the other hand, the activation function in the output (last) layer controls t
 |Regression                 |YES	 |NO       |NO      |
 |Two-class Classification   |NO  	 |YES      |NO      |
 |Multi-class Classification |NO      |YES      |YES     |
-
+<br>
 ## Activation Fuctions for Hidden Layers
 In forward propagation we are using a linear function `(wX + b)` to calculate the `z` value for each node in a layer. Therefore, in order to allow the neural network to learn more complex patterns we will need a nonlinear activation function. This function should be differentiable to allow calculation of gradients in backpropagation.
 
@@ -81,22 +81,31 @@ $$g(z) = \frac{e^z_i}{\Sigma_{j=1}^n e^z_j}$$
 ## Choosing Activation Function for the Output Layer
 The decision tree below demonstrates the common choices of activation function for each prediction type. Since the prediction type is also closely tied to the loss (cost) fuction, I am also including the corresponding loss function used in the popular TensorFlow package used for deeplearning.
 
-<img>
+<center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/output_layer.PNG?raw=True"></center>
 
-> Non-exclusive classes: Referes to case where the prediction could belong to more than one class. For example, we would pick the classes where output > 0.5  
+
+> Non-exclusive classes: Referes to case where the prediction could belong to more than one class. For example, we would pick the classes where output > 0.5 .   
 > Mutually exclusive classes: Referes to cases where the model will only pick one class as final prediction. For example, we would need to pick the one class with highest probability.
 
 <br>
 
 ## Wrapping up: TensorFlow Code Snippet
-The below code summarizes the general layout of designing a neural network using TensorFlow and the arguments where the above activation and loss functions could be applied. The below codes assumes that the input data is already split and scaled.  
+The below code summarizes the general layout of designing a neural network using TensorFlow and the arguments where the above activation and loss functions could be applied to. The below codes assumes that the input data is already split and scaled.  
 
 ```python
 from tensorflow.kera.models import Sequential
-from 
+from tensorflow.keras.layers import Dense
+
+# Mutually exclusive multi-class classification
+model = Sequential()
+model.add(Dense(5, activation='relu'))  # layer 1 with 5 nodes
+model.add(Dense(5, activation='relu'))  # layer 2 with 5 nodes
+model.add(Dense(1))  # output layer
+
+model.compile(optimizer='adam', loss='categorical_crossentropy')
+model.fit(x=X_train, y=Y_train, epochs=200)
 ```
 
-<br>
 <br>
 <br>
 _References:_  
