@@ -3,6 +3,7 @@ layout: post
 title: Choosing Activation Functions for Deep Learning
 author: Artan Zandian
 date: Dec 11, 2021
+excerpt: 'In this post I will be going over various activation functions to explain their use cases and where to apply them in our design of neural networks.'
 ---
 
 In this post I will be going over various activation functions to explain their use cases and where to apply them in our design of neural networks.  
