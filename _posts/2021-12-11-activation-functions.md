@@ -8,7 +8,7 @@ excerpt: 'In this post I will be going over various activation functions to expl
 
 In this post I will be going over various activation functions to explain their use cases and where to apply them in our design of neural networks.  
 
-The [activation function](https://en.wikipedia.org/wiki/Activation_function) `g(z)` defines how the weighted sum of the input `z` for each layer is transformed to a range that is acceptable as an input for the next layer (or prediction output in case of the last layer). Activation functions come in many flavours with the majority of them being non-linear. We will discuss the four common activation functions (Sigmoid, Tahn, ReLU and Leaky ReLU) for hidden layers as well as Softmax and Linear (Identity) activation for the output layer. Since the type of prediction problem also defines the loss function to be used, I will briefly mention the respective loss function in a [TensorFlow](https://www.tensorflow.org/) code snippet when exploring the activation functions.
+The [activation function](https://en.wikipedia.org/wiki/Activation_function) `g(z)` defines how the weighted sum of the input `z` for each layer is transformed to a range that is acceptable as an input for the next layer (or the prediction output in case of the last layer). Activation functions come in many flavours with the majority of them being non-linear. We will discuss the four common activation functions (Sigmoid, Tahn, ReLU and Leaky ReLU) for hidden layers as well as Softmax and Linear (Identity) activation for the output layer. Since the type of prediction problem also defines the loss function to be used, I will briefly mention the respective loss function in a [TensorFlow](https://www.tensorflow.org/) code snippet when exploring the activation functions.
 
 
 The key takeaways from this post are:
@@ -35,10 +35,10 @@ On the other hand, the activation function in the output (last) layer controls t
 In forward propagation we are using a linear function `(wX + b)` to calculate the `z` value for each node in a layer. Therefore, in order to allow the neural network to learn more complex patterns we will need a nonlinear activation function. This function should be differentiable to allow calculation of gradients in backpropagation.
 
 <center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/activations.PNG?raw=True"></center>
-<br>
+
 
 ### Sigmoid
-Also referred to as logistic function, this function resembles an S curve and maps the input values to a real value between 0 and 1. This function has a high computation cost but since it maps 0 to 0.5 and large positive and large negative numeers to 1 and 0 respectively, it is perfect for cases where the output is required to be translated to soft (percentage) or hard (0/1) prediction.  
+Also referred to as Logistic function, this function is an S curve and maps the input values to real values between 0 and 1. This function has a high computation cost but since it maps 0 to 0.5 and large positive and large negative numbers to 1 and 0 respectively, it is perfect for cases where the output is required to be translated to soft (percentage) or hard (0/1) predictions.  
  
 $$sigmoid(z) = \frac{1}{1 + e^{-z}}$$
 
@@ -49,7 +49,7 @@ The Hyperbolic Tangent function or in short `Tanh` (read "Tan + H") looks like a
 $$tanh(z) = \frac{e^{z} - e^{-z}}{e^{z} + e^{-z}}$$  
 
 ### ReLU
-Due to the simplicity and low computation cost, Rectified Linear Unit is the most commonly used activation function in deep neural networks (deep in contrast to shallow networks with two hidden layers). Another big advantage of ReLU is that unlike sigmoid and tanh it is less susceptible to the [vanishing gradients problem](https://en.wikipedia.org/wiki/Vanishing_gradient_problem) which limit the training of deep networks. ReLU was motivated from a biological analogy with neurons where neurons would only be activated if they pass a certain threshold.   
+Due to the simplicity and low computation cost, Rectified Linear Unit (ReLU) is the most commonly used activation function in deep neural networks (deep in contrast to shallow networks with two hidden layers). Another big advantage of ReLU is that unlike sigmoid and tanh it is less susceptible to the [vanishing gradients problem](https://en.wikipedia.org/wiki/Vanishing_gradient_problem) which limit the training of deep networks. ReLU was motivated from a biological analogy with neurons where neurons would only be activated if they pass a certain threshold.   
 This function maps negative numbers to zero and applies the identity function to the positive numbers. This function is not differentiable at 0, but this is not a real problem due to the very low probability of getting an output value of exactly zero.  
 
 $$ReLU(z) = max(0, z)$$  
