@@ -34,7 +34,9 @@ On the other hand, the activation function in the output (last) layer controls t
 ## Activation Fuctions for Hidden Layers
 In forward propagation we are using a linear function `(wX + b)` to calculate the `z` value for each node in a layer. Therefore, in order to allow the neural network to learn more complex patterns we will need a nonlinear activation function. This function should be differentiable to allow calculation of gradients in backpropagation.
 
-image goes here with 4 functions
+<center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/activations.PNG?raw=True"></center>
+<br>
+
 ### Sigmoid
 Also referred to as logistic function, this function resembles an S curve and maps the input values to a real value between 0 and 1. This function has a high computation cost but since it maps 0 to 0.5 and large positive and large negative numeers to 1 and 0 respectively, it is perfect for cases where the output is required to be translated to soft (percentage) or hard (0/1) prediction.  
  
