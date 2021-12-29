@@ -22,8 +22,8 @@ The key takeaways from this post are:
 The type of the activation function in a hidden layer controls how our model learns the weights and biases from the training dataset. For this reason, we are more interested on the performance (how well it learns the parameters) and speed (how fast each epoch will take).  
 
 <center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/activation_table.PNG?raw=True"></center>
-
- [1] inspired by [Williams, David P. (2019)](https://www.cs.ryerson.ca/~aharley/neural-networks/)
+<caption><center>[1] inspired by Williams, David P. (2019)</center></caption>  
+<br>
   
 
 On the other hand, the activation function in the output (last) layer controls the translation of the results to the type of prediction that we expect the model to make (e.g. classification or regression).
@@ -44,7 +44,7 @@ $$sigmoid(z) = \frac{1}{1 + e^{-z}}$$
 
 
 ### Tanh
-The Hyperbolic Tangent function or in short `Tanh` (read "Tan + H") looks like a stretched version of Sigmoid in a sense that it maps the input to a range between -1 and 1. The biggest advantage of tanh over sigmoid is that it is centered around 0 (maps zero to zero), and because of that it typically performs better than sigmoid ([Deep Learning, 2016](https://www.deeplearningbook.org/)).  
+The Hyperbolic Tangent function or in short `Tanh` (read "Tan + H") resembles a stretched version of Sigmoid in a sense that it maps the input to a range between -1 and 1. The biggest advantage of tanh over sigmoid is that it is centered around 0 (maps zero to zero), and because of that it typically performs better than sigmoid ([Deep Learning, 2016](https://www.deeplearningbook.org/)).  
 
 $$tanh(z) = \frac{e^{z} - e^{-z}}{e^{z} + e^{-z}}$$  
 
@@ -117,4 +117,5 @@ model.fit(x=X_train, y=Y_train, epochs=1000)
 _References:_  
 
 [[1](https://www.cs.ryerson.ca/~aharley/neural-networks/)] Williams, David P. "Demystifying deep convolutional neural networks for sonar image classification." (2019).  
-[[2](https://www.deeplearningbook.org/)] Deep Learning (Ian J. Goodfellow, Yoshua Bengio and Aaron Courville), MIT Press, 2016.
+[[2](https://www.deeplearningbook.org/)] Deep Learning (Ian J. Goodfellow, Yoshua Bengio and Aaron Courville), MIT Press, 2016.  
+[[3](https://www.tensorflow.org/api_docs/python/tf)] Tensorflow documentation
