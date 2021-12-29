@@ -3,7 +3,6 @@ layout: post
 title: Preferred Setup for NVIDIA Jetson Nano
 author: Artan Zandian
 date: Dec 20, 2021
-excerpt: 'Recently I got my hands on Jetson Nano 2GB Developer Kit introduced by Nvidia in Oct 2020 as a successor to the original Jetson Nano Developer Kit with 4GB of RAM. However, I didn't find the recommended setup for the kit accommodating for Windows users. I will be walking you through my preferred setup.'
 ---
 
 Recently I got my hands on [Jetson Nano 2GB Developer Kit](https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-nano/education-projects/) introduced by Nvidia in Oct 2020 as a successor to the original [Jetson Nano Developer Kit](https://developer.nvidia.com/embedded/jetson-nano-developer-kit) with 4GB of RAM. Despite the difference in memory size, number of ports and power supply, the two kits almost offer the same performance using an identical 128-core NVIDIA Maxwell GPU.   
