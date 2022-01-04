@@ -70,6 +70,10 @@ In modern neural networks, it is recommended to use ReLU as a default activation
 
 Despite being common for majority of models, Sigmoid and Tanh are still used for Recurrent Neural Networks (RNN).  
 <br>
+### Appropriate Initialization
+Closely tied to the selection of activation functions for hidden layers is the weight initialization used for each layer. The initialization step is very critical to the model’s ultimate performance. For our two most popular activation functions, the most common are Xavier Initialization for Tanh and He initialization for ReLU function. For more details and an interactive illustration of the impact of initialization on the learning please refer to [DeepLearning.Ai notes](https://www.deeplearning.ai/ai-notes/initialization/) on this topic.
+To illustrate this, consider the three-layer neural network below. You can try initializing this network with different methods and observe the impact on the learning.
+<br><br>
 ## Activation Functions for The Output Layer
 Since the output layer directly generates a prediction, the type of activation function is highly dependent on our prediction type. The three main activation functions are Linear, Sigmoid (Logistic) and Softmax. 
 ### Linear function
@@ -82,6 +86,7 @@ Softmax normalizes the output values so that all sum up to 1. This is analogous 
 
 $$g(z) = \frac{e^z_i}{\Sigma_{j=1}^n e^z_j}$$  
 
+<br>  
 
 ## Choosing Activation Function for the Output Layer
 The decision tree below maps the common choices of activation function for the output layer to prediction types. Since the prediction type is also closely tied to the loss (cost) function, I am also including the corresponding loss function used in the popular TensorFlow package used for deep learning.
@@ -91,9 +96,11 @@ The decision tree below maps the common choices of activation function for the o
 
 > Non-exclusive classes: Refers to cases where the prediction could belong to more than one class. An example wouldbe when we need to pick the classes where output > 0.5 .   
 
-> Mutually exclusive classes: Refers to cases where the model will only pick one class as the final prediction. An example would be we need to pick the one class with highest probability.
+> Mutually exclusive classes: Refers to cases where the model will only pick one class as the final prediction. An example would be we need to pick the one class with highest probability.  
 
 <br>
+
+
 
 ## Wrapping up: TensorFlow Code Snippet
 The below code summarizes the general layout of designing a neural network using TensorFlow and the arguments where the above activation and loss functions could be applied to. The below codes assumes that the input data is already split and scaled.  
@@ -118,4 +125,5 @@ _References:_
 
 [[1](https://www.cs.ryerson.ca/~aharley/neural-networks/)] Williams, David P. "Demystifying deep convolutional neural networks for sonar image classification." (2019).  
 [[2](https://www.deeplearningbook.org/)] Deep Learning (Ian J. Goodfellow, Yoshua Bengio and Aaron Courville), MIT Press, 2016.  
-[[3](https://www.tensorflow.org/api_docs/python/tf)] Tensorflow documentation
+[[3](https://www.tensorflow.org/api_docs/python/tf)] Tensorflow documentation  
+[[4]](https://www.deeplearning.ai/) DeepLearning.Ai
