@@ -2,11 +2,11 @@
 layout: post
 title: Jetson Nano for Education
 author: Artan Zandian
-date: Dec 28, 2021
-excerpt: "I have been using Nvidia Jetson Nano for over 3 weeks now and strongly believe that this well-priced developer kit should be included in the requirements for Data Science programs. Let's take a look..."
+date: Jan 12, 2022
+excerpt: "I have been using Nvidia Jetson Nano developer kit for over 3 weeks now and strongly believe that this well-priced developer kit should be leveraged for Data Science education. Let's take a look..."
 ---
 
-It is official. I have new hobby! I have been using Nvidia Jetson Nano developer kit (Jetson Nano) for over 3 weeks now and strongly believe that this well-priced developer kit should be included in the requirements list for Data Science programs. This is not a paid product testing, and my intention is to report my experience with the kit from the eyes of a learner who has been exposed to data science and deep learning workflows for a while now and who understands the necessity of having proper computation resources available.  
+It is official. I have new hobby! I have been using Nvidia Jetson Nano developer kit (Jetson Nano) for over 3 weeks now and strongly believe that this well-priced developer kit should be leveraged for Data Science education. This is not a paid product testing, and my intention is to report my experience with the kit from the eyes of a learner who has been exposed to data science and deep learning workflows for a while now and who understands the necessity of having proper computation resources available.  
 
 To explore whether Nvidia Jetson Nano is the right product for your educational needs, I am breaking down the usage type into three groups and will be going over what I found beneficial for each. I will sum up my review with the shortfalls I found when setting up and working with Jetson Nano.  
 <br>
