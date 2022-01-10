@@ -4,8 +4,6 @@ title: Projects
 permalink: /projects/
 ---
 
- 
-<br>
 
 ### Canadian Heritage Funding
 ---

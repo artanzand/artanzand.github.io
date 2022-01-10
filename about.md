@@ -18,4 +18,4 @@ Experienced in essential technologies and languages such as Python, R, C/C++, Ja
 <br>
 
 ### Contact me
-[Email](mailto:artanzand@yahoo.co.uk) | C: +1 (587) 707-7476
+[Email](mailto:artanzand@yahoo.co.uk)  |  C: +1 (587) 707-7476
