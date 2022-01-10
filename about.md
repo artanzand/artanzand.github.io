@@ -10,7 +10,7 @@ I consider myself a self-motivated asset management professional with over 7 yea
 
 ### More Information
 
-Experienced in essential technologies and languages such as Python, R, C/C++, Javascript, SQL, Scikit-learn, Tensorflow, and PyTorch.  
+Experienced in essential technologies and languages such as Python, R, C/C++, Javascript, SQL, MongoDB, Scikit-learn, Tensorflow, and PyTorch.  
 
 ### Contact me
 
