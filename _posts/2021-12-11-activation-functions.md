@@ -64,7 +64,7 @@ $$LReLU(z) = max(0.01z, z)$$
 
 ## Choosing Activation Functions for Hidden Layers
 
-The first rule of thumb for this selection is that the same activation function is usually used for all hidden layers. This is common in practice to limit the number of hyperparameters that need to be optimized (e.g. number of layers, dimension of layers, learning rate, number of iterations, regularization parameters like dropout layers, momentum, batch size, etc.).  
+The first rule of thumb for this selection is that the same activation function is usually used for all hidden layers. This is common in practice to limit the number of hyperparameters that need to be optimized (e.g. number of layers, number of hidden units, learning rate, number of iterations, regularization parameters like dropout layers, momentum term, batch size, etc.).  
 
 In modern neural networks, it is recommended to use ReLU as a default activation function for hidden layers ([Deep Learning, 2016](https://www.deeplearningbook.org/)) especially for Multilayer Perceptron (MLP) and Convolutional Neural Networks (CNN). Sigmoid and tanh were very popular till 2010 but are rarely used today with the advent of faster functions like ReLU (watch [this](https://www.youtube.com/watch?v=aircAruvnKk&list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi&index=1&ab_channel=3Blue1Brown) for intuition on computation cost).  
 
@@ -82,7 +82,7 @@ This function is also referred to as the Identity function and simply returns th
 $$ g(z) = z $$  
 
 ### Softmax
-Softmax normalizes the output values so that all sum up to 1. This is analogous to normalizing probabilities in a distribution and each output value could be interpreted as the probability for that specific class. This function is very similar to the argmax function in Python in a sense that it selects only one class from the list of many classes. For this reason, this function is perfect for multi-class predictions where the classes are mutually exclusive.
+Softmax is a generalization of logistic regression for multi-class classification. It normalizes the output values so that all sum up to 1. This is analogous to normalizing probabilities in a distribution and each output value could be interpreted as the probability for that specific class. This function is very similar to the argmax function in Python with a difference that argmax computes a hardmax function by selecting only one class (setting one value to 1 while the rest to zeros) from the list of many classes. For this reason, this function is perfect for multi-class predictions where the classes are mutually exclusive.
 
 $$g(z) = \frac{e^z_i}{\Sigma_{j=1}^n e^z_j}$$  
 
@@ -126,4 +126,5 @@ _References:_
 [[1](https://www.cs.ryerson.ca/~aharley/neural-networks/)] Williams, David P. "Demystifying deep convolutional neural networks for sonar image classification." (2019).  
 [[2](https://www.deeplearningbook.org/)] Deep Learning (Ian J. Goodfellow, Yoshua Bengio and Aaron Courville), MIT Press, 2016.  
 [[3](https://www.tensorflow.org/api_docs/python/tf)] Tensorflow documentation  
-[[4]](https://www.deeplearning.ai/) DeepLearning.Ai
+[[4](https://www.deeplearning.ai/)] DeepLearning.Ai
+<br>
