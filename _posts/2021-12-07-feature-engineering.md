@@ -28,10 +28,8 @@ When using models of the same size on the same data, our best friend is the good
 $$R^2=1 - \frac{\text{RSS}}{\text{TSS}}$$
 
 Where 
-- `RSS` is Residual Sum of Squares:  
-$$RSS=\sum_{i=1}^n(y_i - \hat{y}_i)^2$$  
-- `TSS` is Total Sum of Squares:  
-$$TSS=\sum_{i=1}^n(y_i-\bar{y})^2$$  
+- `RSS` is Residual Sum of Squares: $$RSS=\sum_{i=1}^n(y_i - \hat{y}_i)^2$$  
+- `TSS` is Total Sum of Squares: $$TSS=\sum_{i=1}^n(y_i-\bar{y})^2$$  
 
 The most important thing to remember is that as the number of features in a model increase, `R2` increases. Therefore, this metric cannot be used for comparing models of different sizes.
 
