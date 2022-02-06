@@ -71,9 +71,9 @@ RUN pip3 install --upgrade numpy
 You can now pull the base image from nvcr.io, build the image using podman and push to Docker Hub. You will need to change the name of the image. You will be required to login to docker on command line before you can push to the hub.
 
 ```console
-podman pull nvcr.io/nvidia/l4t-base:r32.2
-podman build --tag docker.io/artanzandian/keras:0.1.0 . -f ./Dockerfile
-podman push docker.io/artanzandian/keras:0.1.0
+$podman pull nvcr.io/nvidia/l4t-base:r32.2
+$podman build --tag docker.io/artanzandian/keras:0.1.0 . -f ./Dockerfile
+$podman push docker.io/artanzandian/keras:0.1.0
 ```
 
 <br>
