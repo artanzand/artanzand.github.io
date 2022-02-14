@@ -5,7 +5,7 @@ author: Artan Zandian
 date: Feb 05, 2022
 excerpt: "The base image for Jetson Nano comes with PyTorch preinstalled. In this blog I will go through creation of a docker image to run a Keras model on Jetson Nano."
 ---
-The base image for Jetson Nano comes with PyTorch preinstalled with Jupyter Lab. In this blog I will go through creation of a very light docker image without Jupyter dependencies to run a Keras model on Jetson Nano. I am building this docker image to enable reproducibility for my [Neural Style Transfer](link_to_post) project and to further allow me to run my Keras model on Jetson Nano in Nvidia Docker container (see project [repository](https://github.com/artanzand/neural_style_transfer)). This post assumes reader's basic familiarity with containers and Docker images, and therefore, I will not be justifying my choice of going with a Docker image for this project in detail.
+The base image for Jetson Nano comes with PyTorch preinstalled with Jupyter Lab. In this blog I will go through creation of a very light docker image without Jupyter dependencies to run a Keras model on Jetson Nano. I am building this docker image to enable reproducibility for my [Neural Style Transfer](https://artanzand.github.io//neural-style-transfer/) project and to further allow me to run my Keras model on Jetson Nano in Nvidia Docker container (see project [repository](https://github.com/artanzand/neural_style_transfer)). This post assumes reader's basic familiarity with containers and Docker images, and therefore, I will not be justifying my choice of going with a Docker image for this project in detail.
 <br>
 
 ## Problem Statement
