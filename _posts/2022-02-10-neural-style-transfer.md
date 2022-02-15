@@ -13,15 +13,15 @@ In this blog I will be explaining the concept of Neural Style Transfer (NST), al
 
 My intention for doing this project was two-fold. First, as a deep learning enthusiast I wanted to explore if I can implement a research paper ([Gatys et al. (2015)](<https://arxiv.org/abs/1508.06576>)) in code to run on a GPU-accelerated machine (an NVIDIA product), and second, I wanted to have fun implementing a project. I have always been mesmerized by applications that would take an image and create a stylized version of it. With over 15 years of experience with graphics applications, the one thing that I knew for sure was that this is different from applying multiple filters on an image as these applications also changed the patterns of the input image. I knew that Neural Networks were somehow involved, but with my limited knowledge of deep learning I couldn't figure out how it is possible to create an output when no prediction is involved. It turned out that this can be done through unsupervised deep learning rather than usual supervised learning that neural networks are known for.
 
-An inspiring piece of work for my project was this [video](https://www.youtube.com/watch?v=4b9PYIxmcNc&t=800s&ab_channel=CGGeek) from CG Geek who created a realistic 3D rendering of Bob Ross's famous Summer painting. The overall goal for me was whether I would be able to do the same, but rather than being realistic I wanted to create a model that would stylize video frames of a real scenery into a painting. This allows you to walk through a painting and peek around! The first step towards this goal was clearly transferring an image into a stylized painting.
+An inspiring piece of work for my project was this [video](https://www.youtube.com/watch?v=4b9PYIxmcNc&t=800s&ab_channel=CGGeek) from CG Geek who created a realistic 3D rendering of Bob Ross's famous Summer painting. Rather than being realistic the overall goal for me was to create a model that would stylize video frames of a real scenery into a painting. This would allow us to walk through a painting of choice and peek around! The first step towards this goal was clearly transferring an image into a stylized painting.
 
-<center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/summer.jpg?raw=True"></center>
+<center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/summer.jpg?raw=True" width=400></center>
 <caption><center>[5] Bob Ross - Summer painting</center></caption>
 <br>
 
 # Framework
 
-Most of the supervised deep learning algorithms optimize a cost function to get a set of parameter values (weights). With Neural Style Transfer, we optimize a cost function to get pixel values of a generated image. This algorithm is, therefore, considered an unsupervised deep learning due to absence of a labeled target. It merges a content image (referred to as C in the code) and a style image (S in the code), to create a generated image (G in the code). The generated image G combines the content of the image C with the style of image S.
+Most of the supervised deep learning algorithms optimize a cost function to get a set of parameters (weights). With Neural Style Transfer, we optimize a cost function to get pixel values of a generated image. This algorithm is, therefore, considered an unsupervised deep learning due to the absence of a labeled target. It merges a content image (referred to as C in the code) and a style image (S in the code), to create a generated image (G in the code). The generated image G combines the content of the image C with the style of image S.
 <br>
 
 <center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/VGG19.png?raw=True"></center>
@@ -32,9 +32,10 @@ Most of the supervised deep learning algorithms optimize a cost function to get 
 <caption><center>[7] Neural Style Transfer - Unsupervised Learning</center></caption>  
 <br>
 
-How to read the above diagram? We are building a model in which the optimization algorithm updates the pixel values rather than the neural network's parameters. The general idea is to use the activation value of responses from different hidden layers of a convolutional network to build the stylized image. Activation values of layers captures from low level details (edges, strokes, points, corners) to high level details (patterns, objects) when going from shallow to deeper layers. This is then used to perturb the content image, which gives the final stylized image. Due to freezing the network weights, this is considered a transfer learning.
+How should we read the above diagram? We are building a model in which the optimization algorithm updates the pixel values rather than the neural network's parameters. The general idea is to use the activation value of responses from different hidden layers of a convolutional network to build the stylized image. Activation values of layers capture from low level details (edges, strokes, points, corners) to high level details (patterns, objects) when going from shallow to deeper layers. This is then used to perturb the content image, which gives the final stylized image. Due to freezing of network weights, this is considered a transfer learning too.
 
-This is how it works. We remove the output layer in the traditional supervised neural network and choose some layers activations to represent the content of an image (multiple outputs). We then set both content and style images as the input to the pretrained VGG network and run forward propagation. We set hidden layer activations for both ($a^{(C)}$ and $a^{(C)}$) as the base values to be used for the calculation of the cost for the generated image. The generated image is the input (and output) of the network, as in each iteration which starts from random noise, we will calculate the activation values for the generated image, calculate the cost, and update the input image based on the gradients in respect to pixel values. This is exciting! Deep learning has many different types of models, and this is only one of them!
+This is how the model works. We remove the output layer in the traditional supervised neural network and choose some layers' activations to represent the content of an image (multiple outputs). We then set both content and style images as the input to the pretrained VGG network and run forward propagation. We set hidden layer activations for both ($a^{(C)}$ and $a^{(G)}$) as the base values to be used for the calculation of the cost for the generated image. The generated image is the input (and the output) of the network, as in each iteration which starts from random noise, we will calculate the activation values for the generated image, find the total cost, and update the input image based on the gradients calculated in respect to pixel values. This is very exciting! Deep learning has many different types of models, and this is only one of them!  
+<br>
 
 # Building Blocks
 
@@ -42,22 +43,22 @@ In order to construct the final model we need some helper functions which will h
 
 1. The content cost function
 2. The style cost function
-3. Total cost function
+3. Total cost function  
 <br>
 
 ## Content Cost
 
-What we are targeting when performing NST is for the content in generated image G to match the content of image C. For this we need to calculate the content cost function as per the original paper. The content cost takes a hidden layer activations ($a^{(C)}$ and $a^{(G)}$) of certain layers within neural network, and measures how different are. In my experimentation with the final model, I was getting the most visually pleasing results when choosing a layer in the middle of the network. This ensures that the network captures both higher-level features and details.
+What we are targeting when performing NST is for the content in the generated image G to match the content of image C. For this we need to calculate the content cost function as per the original paper. The content cost takes a hidden layer activations ($a^{(C)}$ and $a^{(G)}$) of certain layers within neural network, and measures how different are. In my experimentation with the final model, I was getting the most visually pleasing results when choosing a layer in the middle of the network. This ensures that the network captures both higher-level features and details.
 
 $$J_{content}(C,G) =  \frac{1}{4 \times n_H \times n_W \times n_C}\sum _{ \text{all entries}} (a^{(C)} - a^{(G)})^2 $$
 
 where:
 
 - $n_H, n_W$ and $n_C$ are the dimensions of chosen hidden layers.
-- $a^{(C)}$ and $a^{(G)}$ are chosen hidden layers' activations.
+- $a^{(C)}$ and $a^{(G)}$ are chosen hidden layers' activations.  
 <br>
 
-And here is the Tensorflow implementation of the cost function:  
+Tensorflow implementation of the cost function looks like the below.  
 
 ```py
 def compute_content_cost(content_output, generated_output):
@@ -84,17 +85,20 @@ def compute_content_cost(content_output, generated_output):
 
 ## Style Cost
 
-The most critical ingredient of the style cost is a matrix called a Gram matrix which is simply the dot product to matrices. This function measures the correlation and prevelance patterns between activations by measuring how similar the activations of one channel (filter) are to the activations of another channel.  
+The most critical ingredient of the style cost is a matrix called a Gram matrix which is simply the dot product of two matrices. This function measures the correlation and prevelance of patterns between activations by measuring how similar the activations of one channel (filter) are to the activations of another channel.  
 $$\mathbf{G}_{gram} = \mathbf{A} \mathbf{A}^T$$  
 
-To minimize the distance between the Gram matrix of the Generated image (G)and the Style image (S) we will then need to calculate this difference between for each of our activation layers. The style cost for a given layer $[l]$ is defined as below:
+To minimize the distance between the Gram matrix of the Generated image (G) and the Style image (S) we will then need to calculate this difference for each of our activation layers. The style cost for a given layer $[l]$ is defined as below.  
+
 $$J_{style}^{[l]}(S,G) = \frac{1}{(2 \times n_C \times n_H \times n_W)^2} \sum_{i=1}^{n_C}\sum_{j=1}^{n_C}(G^{(S)}_{(gram)i,j} - G^{(G)}_{(gram)i,j})^2 $$  
+
 where:
 
 - $n_H, n_W$ and $n_C$ are the dimensions of chosen hidden layers.
-- superscripts S and G refer to the Style and Generated images.
+- superscripts S and G refer to the Style and Generated images.  
+<br>
 
-Tensorflow implementation of one layer style cost is as below:
+Tensorflow implementation of one layer style cost is as below. Note that the constant value in front of the summations are not necessary and could dropped since the total style cost already has parameters alpha and beta that can be adjusted to simulated the same outcome. I am following original authors formula in the code below.
 
 ```python
 def compute_layer_style_cost(a_S, a_G):
@@ -124,12 +128,12 @@ def compute_layer_style_cost(a_S, a_G):
 
 ### Style Weights
 
-We will get a better output image if we combine the style cost of multiple layers. To do this we will need to first identify which layers we are interested in, and then assign weights to them. To pick the appropriate layers we will first need to look at the VGG19 architecture by calling `model.layers`.  
+We will get a better output image if we combine the style cost of multiple layers. To do so we will need to first identify which layers we are interested in, and then assign weights to them. To pick the appropriate layers we will first need to look at the VGG19 architecture by calling `model.layers`.  
 
 <center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/VGG19_layers.JPG?raw=True"></center>
 <br>
 
-block5_conv4 in the above architecture will represent our generated image. Through my experimentations, I realized that layers in the middle are the best to be used for NST. The logic behind this is that these layers capture both the high- and low-level features which are instrumental in having a proper stylized image. Since working with layer weights are not user-friendly, I have written a function that will select the 5 layers or choice with proper weights that I found giving the best results. Here is a snippet of the code with selected layers.
+block5_conv4 in the above architecture will represent our generated image. Through my experimentations, I realized that layers in the middle are the best to be used for NST. The logic behind this is that these layers capture both the high- and low-level features which are instrumental in having a proper stylized image. Since working with layer weights are not user-friendly, I have written a function that will select the 5 layers of choice with proper weights which I found giving the best results. Here is a snippet of the code with selected layers.
 
 ```python
 def get_style_layers(similarity):
@@ -146,11 +150,11 @@ def get_style_layers(similarity):
     return style_layers
 ```  
 
-"similarity" is an optional argument in the `main()` function (default to "balanced") and accepts three options: "content", "balanced" and "style". As the name suggest, this value defines whether the generated image should be similar to either of input images or a balanced between the two.
+"similarity" is an optional argument in the `main()` function (default to "balanced") and accepts three options: "content", "balanced" and "style". As the names suggest, this value defines whether the generated image should be similar to either of input images or a balanced between the two.
 
 Here is the general concept for choosing the weights. If it is desired to have a generated image that softly follows the style image, we should choose larger weights for deeper layers and smaller weights for the shallow layers. The reverse holds if we want the output image to strongly follow the style image (example above). The general intuition is that deeper layers capture higher-level concepts (i.e. the overall shape), and the features in the deeper layers are less localized in the image relative to each other.
 
-Combining the style costs for different layers are done with the following formula where the values for $\lambda^{[l]}$ are defined in `style_layers`.
+Combining the style costs for different layers are done with the following formula where the values for $\lambda^{[l]}$ for each layer ${l}$ are defined in `style_layers`.
 
 $$J_{style}(S,G) = \sum_{l} \lambda^{[l]} J^{[l]}_{style}(S,G)$$
 
@@ -176,7 +180,7 @@ def compute_style_cost(style_image_output, generated_image_output, style_layers)
 
 ### Cost Function
 
-The final step is to put both style and content cost together in a linear function to allow for simultaneous minimization of both. In the below function $\alpha$ and $\beta$ are hyperparameters that control the relative weighting between content and style. I am setting this to a 3 to 1 ratio in my cost function since are final goal is to create an image close to the style image.
+The final step is to put both style and content cost together in a linear function to allow for simultaneous minimization of both. In the below function $\alpha$ and $\beta$ are hyperparameters that control the relative weighting between content and style. I am setting this to a 3 to 1 ratio in my cost function since our final goal is to create an image similar to the style image.
 
 $$J(G) = \alpha J_{content}(C,G) + \beta J_{style}(S,G)$$
 
@@ -189,15 +193,16 @@ def total_cost(J_content, J_style, alpha=10, beta=30):
 
 <br>
 
-# Putting it together
+# Putting All Together
 
 ## Transfer Learning
 
-The idea of using a neural network trained on a different task and applying it to a new task is called transfer learning. NST uses a previously trained convolutional network and builds on top of that. We will use a 19-layer version of the VGG network from the original NST paper published by Visual Geometry Group (VGG) in 2014. This model has already been trained on the ImageNet database and has learned to recognize a variety of detailed features at the first hidden layers and high level features at the last layers.
+The idea of using a neural network trained on a different task and applying it to a new task is called transfer learning. NST uses a previously trained convolutional network and builds on top of that. We will use a 19-layer version of the VGG network from the original NST paper published by Visual Geometry Group (VGG) in 2014. This model has already been trained on the ImageNet dataset and has learned to recognize a variety of detailed features at the first hidden layers and high level features at the last layers.  
+<br>
 
 ## Trainer Function
 
-To allow for calculation of the gradients, which are in respect to the generated pixel values in case of this project, and to make an optimization step, I am using Tensorflow's `GradietTape()` method which will do the automatic differentiation for us. A minor drift from the L-BFGS optimizer which was used by original authors of the paper is the use of Adam optimizer, because Tensorflow doesn't support the earlier.
+To allow for calculation of the gradients, which are in respect to the generated pixel values in case of this project, and to make an optimization step, I am using Tensorflow's `GradietTape()` method which will do the automatic differentiation for us. A minor drift from the L-BFGS optimizer which was used by original authors of the paper is the use of Adam optimizer due to Tensorflow not supporting the earlier.
 
 ```python
 def trainer(generated_image, vgg_model_outputs, style_layers, optimizer, a_C, a_S):
@@ -224,7 +229,7 @@ def trainer(generated_image, vgg_model_outputs, style_layers, optimizer, a_C, a_
 
 ## Optimization of the Generated Image
 
-The main function will be in charge of doing some housekeeping items like checking for GPU, loading and preprocessing the input images, loading the pretrained VGG19 model, computing the total cost and iterating the train step in order to train the model. We are locking the model weights because we are performing a transfer learning. The key step in the below function is using `tf.Variable()` to define the generated image at the value that we are trying to optimize.
+The main function will be in charge of doing some housekeeping items like checking for GPU, loading and preprocessing input images, loading the pretrained VGG19 model, computing the total cost and iterating the train step in order to train the model. We are locking the model weights because we are performing a transfer learning. The key step in the below function is using `tf.Variable()` to define the generated image as the value that we are trying to optimize.
 
 ```python
 def main(content, style, save, similarity="balanced", epochs=500):
@@ -315,7 +320,7 @@ To answer my earlier question in the Motivation section, here is the final resul
 <center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/moraine_style.JPG?raw=True"></center>
 <br>
 
-The biggest limitation of this technique is being computationally expensive. My implementation of Neural Style Transfer needs to run for over 10,000 epochs to generate a reasonable stylized image which would lead to longer run times. The output below, for example, took over 10 mins with 10,000 epochs on my [Nvidia Jetson Nano](https://artanzand.github.io//Setup-Jetson-Nano/). This would be very problematic for my ultimate goal of creating a moving Bob Ross painting! The two solutions that come into mind is to, first, reduce the frames per second for the video or alternatively create a GIF output instead of a video output, and second, which would require much more research, is whether I would be able to only calculate the extra pixels that appear on a new frame (compared to the previous one) and concatenate them with the already stylized pixels from the previous frame.
+The biggest limitation of this technique is being computationally expensive. My implementation of Neural Style Transfer needs to run for over 10,000 epochs to generate a reasonable stylized image which would lead to longer run times. The output below, for example, took over 10 mins with 10,000 epochs on my [Nvidia Jetson Nano](https://artanzand.github.io//Setup-Jetson-Nano/). This would be very problematic for my ultimate goal of creating a motion picture of Bob Ross painting! The two solutions that come into mind are to, first, reduce the frames per second for the video or alternatively create a GIF output instead of a video output, and second, which would require much more research, is whether I would be able to only calculate the extra pixels that appear on a new frame (compared to the previous one) and concatenate them with the already stylized pixels from the previous frame.
 
 <center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/moraine_GIF.gif?raw=True"></center>
 <br>
@@ -326,9 +331,9 @@ The biggest limitation of this technique is being computationally expensive. My 
 
 [2] Athalye A., athalye2015neuralstyle, "Neural Style" (2015): [Repository](https://github.com/anishathalye/neural-style)
 
-[3] Log0 [post](http://www.chioka.in/tensorflow-implementation-neural-algorithm-of-artistic-style)  
+[3] [DeepLearning.ai](https://www.deeplearning.ai/) Deep Learning Specialization lecture notes  
 
-[4] [DeepLearning.ai](https://www.deeplearning.ai/) Deep Learning Specialization lecture notes  
+[4] Log0 [post](http://www.chioka.in/tensorflow-implementation-neural-algorithm-of-artistic-style)  
 
 [5] Bob Ross - Summer painting: [Image source](https://blog.twoinchbrush.com/article/paint-better-mountains-upgrade-your-titanium-white/)  
 
