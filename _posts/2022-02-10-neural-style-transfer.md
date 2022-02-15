@@ -59,7 +59,7 @@ where:
 
 And here is the Tensorflow implementation of the cost function:  
 
-```python
+```py
 def compute_content_cost(content_output, generated_output):
     """ """
     # Exclude the last layer output
