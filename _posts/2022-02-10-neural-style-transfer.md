@@ -6,16 +6,17 @@ date: Feb 10, 2022
 excerpt: "Most of the supervised deep learning algorithms optimize a cost function to get a set of parameter values (weights). With Neural Style Transfer, we optimize a cost function to get pixel values of a generated image. This algorithm is, therefore, considered an unsupervised deep learning due to absence of a labeled target."
 ---
 
-In this blog I will be explaining the concept of Neural Style Transfer (NST), along with the calculations and highlevel code structure. For Tensorflow coding implementation details please refer to the project [repository](https://github.com/artanzand/neural_style_transfer).
+In this blog I will be explaining the concept of Neural Style Transfer (NST), along with the calculations and high level code structure. For Tensorflow coding implementation details please refer to the project [repository](https://github.com/artanzand/neural_style_transfer).
+<br>
 
 # Motivation
 
-My intention for doing this project was two-fold. First, as a deep learning enthusiast I wanted to explore if I can implement a research paper ([[Gatys et al. (2015).](https://arxiv.org/abs/1508.06576)](<https://arxiv.org/abs/1508.06576>)) in code to run on a GPU-accelerated machine (an NVIDIA product), and second, I wanted to have fun implementing a project. I have always been mezmorized by applications that would take an image and create a stylized version of it. With over 15 years of experience with graphics applications, the one thing that I knew for sure was that this is different from applying multiple filters on an image as these applications also changed the patterns of the input image. I knew that Neural Networks were somehow involved, but with my limited knowledge of deep learning I couldn't figure out how it is possible to create an output when no prediction is involved. It turned out that this can be done through unsupervised deep learning rather than usuall supervised learning that neural networks are known for.
+My intention for doing this project was two-fold. First, as a deep learning enthusiast I wanted to explore if I can implement a research paper ([Gatys et al. (2015)](<https://arxiv.org/abs/1508.06576>)) in code to run on a GPU-accelerated machine (an NVIDIA product), and second, I wanted to have fun implementing a project. I have always been mesmerized by applications that would take an image and create a stylized version of it. With over 15 years of experience with graphics applications, the one thing that I knew for sure was that this is different from applying multiple filters on an image as these applications also changed the patterns of the input image. I knew that Neural Networks were somehow involved, but with my limited knowledge of deep learning I couldn't figure out how it is possible to create an output when no prediction is involved. It turned out that this can be done through unsupervised deep learning rather than usual supervised learning that neural networks are known for.
 
-An inspiring piece of work for my project was this [video](https://www.youtube.com/watch?v=4b9PYIxmcNc&t=800s&ab_channel=CGGeek) from CG Geek who created a realistic 3D rendering of Bob Ross's famous Summer painting. The overal goal for me was whether I would be able to do the same, but rather than being realistic I wanted to create a model that would stylize video frames of a real scenary into a painting. This allows you to walk through a painting and peek around! The first step towards this goal was clearly transfering an image into a stylized painting.
+An inspiring piece of work for my project was this [video](https://www.youtube.com/watch?v=4b9PYIxmcNc&t=800s&ab_channel=CGGeek) from CG Geek who created a realistic 3D rendering of Bob Ross's famous Summer painting. The overall goal for me was whether I would be able to do the same, but rather than being realistic I wanted to create a model that would stylize video frames of a real scenery into a painting. This allows you to walk through a painting and peek around! The first step towards this goal was clearly transferring an image into a stylized painting.
 
 <center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/summer.jpg?raw=True"></center>
-<caption><center>[1] Bob Ross - Summer: ([Image source](https://blog.twoinchbrush.com/article/paint-better-mountains-upgrade-your-titanium-white/))</center></caption>
+<caption><center>[5] Bob Ross - Summer painting</center></caption>
 <br>
 
 # Framework
@@ -24,16 +25,16 @@ Most of the supervised deep learning algorithms optimize a cost function to get 
 <br>
 
 <center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/VGG19.png?raw=True"></center>
-<caption><center>[2] VGG19 - Supervised Neural Network: [Image source](https://towardsdatascience.com/extract-features-visualize-filters-and-feature-maps-in-vgg16-and-vgg19-cnn-models-d2da6333edd0)</center></caption>  
+<caption><center>[6] VGG19 - Supervised Neural Network</center></caption>  
 <br>
 
 <center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/NST_diagram.JPG?raw=True"></center>
-<caption><center>[3] Neural Style Transfer - Unsupervised Learning: [Image source](https://arxiv.org/abs/1508.06576)</center></caption>  
+<caption><center>[7] Neural Style Transfer - Unsupervised Learning</center></caption>  
 <br>
 
-How to read the above diagram? We are building a model in which the optimization algorithm updates the pixel values rather than the neural network's parameters. The general idea is to use the activation value of responses from different hidden layers of a convolutional network to build the stylized image. Activation values of layers captures from low level details (edges, strokes, points, corners) to high level details (patterns, objects) when going from shallow to deeper layers. This is then used to perturb the content image, which gives the final stylized image. Due to freezing the network weights, this is considered a tranfer learning.
+How to read the above diagram? We are building a model in which the optimization algorithm updates the pixel values rather than the neural network's parameters. The general idea is to use the activation value of responses from different hidden layers of a convolutional network to build the stylized image. Activation values of layers captures from low level details (edges, strokes, points, corners) to high level details (patterns, objects) when going from shallow to deeper layers. This is then used to perturb the content image, which gives the final stylized image. Due to freezing the network weights, this is considered a transfer learning.
 
-This is how it works. We remove the output layer in the traditional supervised neural network and choose some layers activations to represent the content of an image (multiple outputs). We then set both content and style images as the input to the pretrained VGG network, and run forward propagation. We set hidden layer activations for both ($a^{(C)}$ and $a^{(C)}$) as the base values to be used for the calculation of the cost for the generated image. The generated image is the input (and output) of the network, as in each iteration which starts from random noise, we will calculate the activation values for the generated image, calculate the cost, and update the input image based on the gradients in respect to pixel values. This is exciting! Deep learning has many different types of models and this is only one of them!
+This is how it works. We remove the output layer in the traditional supervised neural network and choose some layers activations to represent the content of an image (multiple outputs). We then set both content and style images as the input to the pretrained VGG network and run forward propagation. We set hidden layer activations for both ($a^{(C)}$ and $a^{(C)}$) as the base values to be used for the calculation of the cost for the generated image. The generated image is the input (and output) of the network, as in each iteration which starts from random noise, we will calculate the activation values for the generated image, calculate the cost, and update the input image based on the gradients in respect to pixel values. This is exciting! Deep learning has many different types of models, and this is only one of them!
 
 # Building Blocks
 
@@ -46,7 +47,7 @@ In order to construct the final model we need some helper functions which will h
 
 ## Content Cost
 
-What we are targeting when performing NST is for the content in generated image G to match the content of image C. For this we need to calculate the content cost function as per the original paper. The content cost takes a hidden layer activations ($a^{(C)}$ and $a^{(G)}$) of certain layers within neural network, and measures how different are. In my experimentation with the final model I was getting the most visually pleasing results when choosing a layer in the middle of the network. This ensures that the network captures both higher-level features and details.
+What we are targeting when performing NST is for the content in generated image G to match the content of image C. For this we need to calculate the content cost function as per the original paper. The content cost takes a hidden layer activations ($a^{(C)}$ and $a^{(G)}$) of certain layers within neural network, and measures how different are. In my experimentation with the final model, I was getting the most visually pleasing results when choosing a layer in the middle of the network. This ensures that the network captures both higher-level features and details.
 
 $$J_{content}(C,G) =  \frac{1}{4 \times n_H \times n_W \times n_C}\sum _{ \text{all entries}} (a^{(C)} - a^{(G)})^2 $$
 
@@ -197,7 +198,7 @@ def total_cost(J_content, J_style, alpha=10, beta=30):
 
 ## Transfer Learning
 
-The idea of using a neural network trained on a different task and applying it to a new task is called transfer learning. NST uses a previously trained convolutional network, and builds on top of that. We will use a 19-layer version of the VGG network from the original NST paper published by Visual Geometry Group (VGG) in 2014. This model has already been trained on the ImageNet database, and has learned to recognize a variety of detailed features at the first hidden layers and high level features at the last layers.
+The idea of using a neural network trained on a different task and applying it to a new task is called transfer learning. NST uses a previously trained convolutional network and builds on top of that. We will use a 19-layer version of the VGG network from the original NST paper published by Visual Geometry Group (VGG) in 2014. This model has already been trained on the ImageNet database and has learned to recognize a variety of detailed features at the first hidden layers and high level features at the last layers.
 
 ## Trainer Function
 
@@ -237,7 +238,7 @@ def main(content, style, save, similarity="balanced", epochs=500):
         # Limit the image size to increase performance
         image_size = 400
 
-        # capture content image size to reshape at end
+        # Capture content image size to reshape at end
         content_image = Image.open(content)
         content_width, content_height = content_image.size
 
@@ -330,10 +331,16 @@ The biggest limitation of this technique is being computationally expensive. My 
 
 ## References
 
-[1] Gatys, Leon A., Ecker, Alexander S. and Bethge, Matthias. "A Neural Algorithm of Artistic Style.." CoRR abs/1508.06576 (2015): [link to paper](https://arxiv.org/abs/1508.06576)  
+[1] Gatys, Leon A., Ecker, Alexander S. and Bethge, Matthias. "A Neural Algorithm of Artistic Style." CoRR abs/1508.06576 (2015): [link to paper](https://arxiv.org/abs/1508.06576)  
 
-[2] Athalye A., athalye2015neuralstyle, "Neural Style" (2015): [Repository](https://github.com/anishathalye/neural-style)  
+[2] Athalye A., athalye2015neuralstyle, "Neural Style" (2015): [Repository](https://github.com/anishathalye/neural-style)
 
-[3] Log0 [post](http://www.chioka.in/tensorflow-implementation-neural-algorithm-of-artistic-style)
+[3] Log0 [post](http://www.chioka.in/tensorflow-implementation-neural-algorithm-of-artistic-style)  
 
-[4] [DeepLearning.ai](https://www.deeplearning.ai/) Deep Learning Specialization lecture notes
+[4] [DeepLearning.ai](https://www.deeplearning.ai/) Deep Learning Specialization lecture notes  
+
+[5] Bob Ross - Summer painting: [Image source](https://blog.twoinchbrush.com/article/paint-better-mountains-upgrade-your-titanium-white/)  
+
+[6] VGG19 - Supervised Neural Network: [Image source](https://towardsdatascience.com/extract-features-visualize-filters-and-feature-maps-in-vgg16-and-vgg19-cnn-models-d2da6333edd0)  
+
+[7] Neural Style Transfer - Unsupervised Learning: [Image source](https://arxiv.org/abs/1508.06576)
