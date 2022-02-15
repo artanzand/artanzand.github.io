@@ -5,6 +5,17 @@ permalink: /projects/
 ---
 
 
+### Neural Style Transfer
+
+---
+This is a personal project on implementation of Neural Style Transfer, an unsupervised machine learning model. The goal of this project was to read and understand a research paper ([Gatys et al. (2015)](<https://arxiv.org/abs/1508.06576>)) and implement a Tensorflow code that would run on a GPU-accelerated machine (an NVIDIA product). Skills learned also include image processing and transformation, Transfer Learning and building an NVIDIA docker image using [Podman](https://artanzand.github.io//Tensorflow-Docker/).
+
+Tools used: Tensorflow, Keras, PIL, NVIDIA Jetson Nano, Podman, QEMU
+[Link to the project](https://github.com/artanzand/neural_style_transfer)
+[Link to post](https://artanzand.github.io//neural-style-transfer/)
+
+<br>
+
 ### Canadian Heritage Funding
 
 ---

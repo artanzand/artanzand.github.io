@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Building an NVIDIA Docker Container with Podman
+title: Building an NVIDIA Docker Image with Podman
 author: Artan Zandian
 date: Feb 05, 2022
 excerpt: "The base image for Jetson Nano comes with PyTorch preinstalled. In this blog I will go through creation of a docker image to run a Keras model on Jetson Nano."
