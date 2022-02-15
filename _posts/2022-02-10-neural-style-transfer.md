@@ -89,7 +89,7 @@ The most critical ingredient of the style cost is a matrix called a Gram matrix 
 
 $$\mathbf{G}_{gram} = \mathbf{A} \mathbf{A}^T$$  
 
-To minimize the distance between the Gram matrix of the Generated image (G) and the Style image (S) we will then need to calculate this difference for each of our activation layers. The style cost for a given layer $[l]$ is defined as below.  
+To minimize the distance between the Gram matrix of the Generated image (G) and the Style image (S) we will then need to calculate this difference for each of our activation layers. The style cost for a given layer [l] is defined as below.  
 
 $$J_{style}^{[l]}(S,G) = \frac{1}{(2 \times n_C \times n_H \times n_W)^2} \sum_{i=1}^{n_C}\sum_{j=1}^{n_C}(G^{(S)}_{(gram)i,j} - G^{(G)}_{(gram)i,j})^2 $$  
 
@@ -155,7 +155,7 @@ def get_style_layers(similarity):
 
 Here is the general concept for choosing the weights. If it is desired to have a generated image that softly follows the style image, we should choose larger weights for deeper layers and smaller weights for the shallow layers. The reverse holds if we want the output image to strongly follow the style image (example above). The general intuition is that deeper layers capture higher-level concepts (i.e. the overall shape), and the features in the deeper layers are less localized in the image relative to each other.
 
-Combining the style costs for different layers are done with the following formula where the values for $\lambda^{[l]}$ for each layer ${l}$ are defined in `style_layers`.
+Combining the style costs for different layers are done with the following formula where the values for lambda for each layer [l] are defined in `style_layers`.
 
 $$J_{style}(S,G) = \sum_{l} \lambda^{[l]} J^{[l]}_{style}(S,G)$$
 
@@ -181,7 +181,7 @@ def compute_style_cost(style_image_output, generated_image_output, style_layers)
 
 ### Cost Function
 
-The final step is to put both style and content cost together in a linear function to allow for simultaneous minimization of both. In the below function $\alpha$ and $\beta$ are hyperparameters that control the relative weighting between content and style. I am setting this to a 3 to 1 ratio in my cost function since our final goal is to create an image similar to the style image.
+The final step is to put both style and content cost together in a linear function to allow for simultaneous minimization of both. In the below function alpha and beta are hyperparameters that control the relative weighting between content and style. I am setting this to a 3 to 1 ratio in my cost function since our final goal is to create an image similar to the style image.
 
 $$J(G) = \alpha J_{content}(C,G) + \beta J_{style}(S,G)$$
 
