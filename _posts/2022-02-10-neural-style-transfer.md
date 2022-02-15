@@ -34,7 +34,7 @@ Most of the supervised deep learning algorithms optimize a cost function to get 
 
 How should we read the above diagram? We are building a model in which the optimization algorithm updates the pixel values rather than the neural network's parameters. The general idea is to use the activation value of responses from different hidden layers of a convolutional network to build the stylized image. Activation values of layers capture from low level details (edges, strokes, points, corners) to high level details (patterns, objects) when going from shallow to deeper layers. This is then used to perturb the content image, which gives the final stylized image. Due to freezing of network weights, this is considered a transfer learning too.
 
-This is how the model works. We remove the output layer in the traditional supervised neural network and choose some layers' activations to represent the content of an image (multiple outputs). We then set both content and style images as the input to the pretrained VGG network and run forward propagation. We set hidden layer activations for both ($a^{(C)}$ and $a^{(G)}$) as the base values to be used for the calculation of the cost for the generated image. The generated image is the input (and the output) of the network, as in each iteration which starts from random noise, we will calculate the activation values for the generated image, find the total cost, and update the input image based on the gradients calculated in respect to pixel values. This is very exciting! Deep learning has many different types of models, and this is only one of them!  
+This is how the model works. We remove the output layer in the traditional supervised neural network and choose some layers' activations to represent the content of an image (multiple outputs). We then set both content and style images as the input to the pretrained VGG network and run forward propagation. We set hidden layer activations for both (a_C and a_G) as the base values to be used for the calculation of the cost for the generated image. The generated image is the input (and the output) of the network, as in each iteration which starts from random noise, we will calculate the activation values for the generated image, find the total cost, and update the input image based on the gradients calculated in respect to pixel values. This is very exciting! Deep learning has many different types of models, and this is only one of them!  
 <br>
 
 # Building Blocks
@@ -48,14 +48,14 @@ In order to construct the final model we need some helper functions which will h
 
 ## Content Cost
 
-What we are targeting when performing NST is for the content in the generated image G to match the content of image C. For this we need to calculate the content cost function as per the original paper. The content cost takes a hidden layer activations ($a^{(C)}$ and $a^{(G)}$) of certain layers within neural network, and measures how different are. In my experimentation with the final model, I was getting the most visually pleasing results when choosing a layer in the middle of the network. This ensures that the network captures both higher-level features and details.
+What we are targeting when performing NST is for the content in the generated image G to match the content of image C. For this we need to calculate the content cost function as per the original paper. The content cost takes a hidden layer activations (a_C and a_G) of certain layers within neural network, and measures how different are. In my experimentation with the final model, I was getting the most visually pleasing results when choosing a layer in the middle of the network. This ensures that the network captures both higher-level features and details.
 
 $$J_{content}(C,G) =  \frac{1}{4 \times n_H \times n_W \times n_C}\sum _{ \text{all entries}} (a^{(C)} - a^{(G)})^2 $$
 
 where:
 
-- $n_H, n_W$ and $n_C$ are the dimensions of chosen hidden layers.
-- $a^{(C)}$ and $a^{(G)}$ are chosen hidden layers' activations.  
+- n_H, n_W and n_C are the dimensions of chosen hidden layers.
+- a(C) and a(G) are chosen hidden layers' activations.  
 <br>
 
 Tensorflow implementation of the cost function looks like the below.  
@@ -86,6 +86,7 @@ def compute_content_cost(content_output, generated_output):
 ## Style Cost
 
 The most critical ingredient of the style cost is a matrix called a Gram matrix which is simply the dot product of two matrices. This function measures the correlation and prevelance of patterns between activations by measuring how similar the activations of one channel (filter) are to the activations of another channel.  
+
 $$\mathbf{G}_{gram} = \mathbf{A} \mathbf{A}^T$$  
 
 To minimize the distance between the Gram matrix of the Generated image (G) and the Style image (S) we will then need to calculate this difference for each of our activation layers. The style cost for a given layer $[l]$ is defined as below.  
@@ -94,7 +95,7 @@ $$J_{style}^{[l]}(S,G) = \frac{1}{(2 \times n_C \times n_H \times n_W)^2} \sum_{
 
 where:
 
-- $n_H, n_W$ and $n_C$ are the dimensions of chosen hidden layers.
+- n_H, n_W and n_C are the dimensions of chosen hidden layers.
 - superscripts S and G refer to the Style and Generated images.  
 <br>
 
@@ -340,3 +341,5 @@ The biggest limitation of this technique is being computationally expensive. My 
 [6] VGG19 - Supervised Neural Network: [Image source](https://towardsdatascience.com/extract-features-visualize-filters-and-feature-maps-in-vgg16-and-vgg19-cnn-models-d2da6333edd0)  
 
 [7] Neural Style Transfer - Unsupervised Learning: [Image source](https://arxiv.org/abs/1508.06576)
+
+<br>
