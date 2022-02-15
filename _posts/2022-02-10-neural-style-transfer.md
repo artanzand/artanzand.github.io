@@ -126,13 +126,8 @@ def compute_layer_style_cost(a_S, a_G):
 
 We will get a better output image if we combine the style cost of multiple layers. To do this we will need to first identify which layers we are interested in, and then assign weights to them. To pick the appropriate layers we will first need to look at the VGG19 architecture by calling `model.layers`.  
 
-| Block 1      | Block 2      | Block 3      | Block 4      | Block 5     |
-|--------------|--------------|--------------|--------------|-------------|
-| input_1      | block2_conv1 | block3_conv1 | block4_conv1 | block5_conv1|
-| block1_conv1 | block2_conv2 | block3_conv2 | block4_conv2 | block5_conv2|
-| block1_conv2 | block2_conv3 | block3_conv3 | block4_conv3 | block5_conv3|
-| block1_pool  | block2_conv4 | block3_conv4 | block4_conv4 | block5_conv4|
-|              | block2_pool  | block3_pool  | block4_pool  | block5_pool |
+<center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/VGG19_layers.JPG?raw=True"></center>
+<br>
 
 block5_conv4 in the above architecture will represent our generated image. Through my experimentations, I realized that layers in the middle are the best to be used for NST. The logic behind this is that these layers capture both the high- and low-level features which are instrumental in having a proper stylized image. Since working with layer weights are not user-friendly, I have written a function that will select the 5 layers or choice with proper weights that I found giving the best results. Here is a snippet of the code with selected layers.
 
@@ -183,10 +178,10 @@ def compute_style_cost(style_image_output, generated_image_output, style_layers)
 
 The final step is to put both style and content cost together in a linear function to allow for simultaneous minimization of both. In the below function $\alpha$ and $\beta$ are hyperparameters that control the relative weighting between content and style. I am setting this to a 3 to 1 ratio in my cost function since are final goal is to create an image close to the style image.
 
-$$$J(G) = \alpha J_{content}(C,G) + \beta J_{style}(S,G)$$
+$$J(G) = \alpha J_{content}(C,G) + \beta J_{style}(S,G)$$
 
 ```python
-def total_cost(J_content, J_style, alpha=10, beta=30):
+def total_cost(J_content, J_style, alpha=10, beta=30):  
     """ """
     J = alpha * J_content + beta * J_style
     return J
@@ -234,86 +229,82 @@ The main function will be in charge of doing some housekeeping items like checki
 ```python
 def main(content, style, save, similarity="balanced", epochs=500):
     """ """
-    try:
-        # Limit the image size to increase performance
-        image_size = 400
+    # Limit the image size to increase performance
+    image_size = 400
 
-        # Capture content image size to reshape at end
-        content_image = Image.open(content)
-        content_width, content_height = content_image.size
+    # Capture content image size to reshape at end
+    content_image = Image.open(content)
+    content_width, content_height = content_image.size
 
-        # Load pretrained VGG19 model
-        vgg = tf.keras.applications.VGG19(
-            include_top=False,
-            input_shape=(image_size, image_size, 3),
-            weights="imagenet",
+    # Load pretrained VGG19 model
+    vgg = tf.keras.applications.VGG19(
+        include_top=False,
+        input_shape=(image_size, image_size, 3),
+        weights="imagenet",
+    )
+    # Lock in the model weights
+    vgg.trainable = False
+
+    # Load Content and Style images
+    content_image = preprocess_image(content, image_size)
+    style_image = preprocess_image(style, image_size)
+
+    # Randomly initialize Generated image
+    # Define the generated image as as tensorflow variable to optimize
+    generated_image = tf.Variable(
+        tf.image.convert_image_dtype(content_image, tf.float32)
+    )
+    # Add random noise to initial generated image
+    noise = tf.random.uniform(tf.shape(generated_image), -0.25, 0.25)
+    generated_image = tf.add(generated_image, noise)
+    generated_image = tf.clip_by_value(
+        generated_image, clip_value_min=0.0, clip_value_max=1.0
+    )
+
+    # Define output layers
+    style_layers = get_style_layers(similarity=similarity)
+    content_layer = [("block5_conv4", 1)]  # The last layer of VGG19
+
+    vgg_model_outputs = get_layer_outputs(vgg, style_layers + content_layer)
+
+    # Content encoder
+    # Define activation encoding for the content image (a_C)
+    # Assign content image as the input of VGG19
+    preprocessed_content = tf.Variable(
+        tf.image.convert_image_dtype(content_image, tf.float32)
+    )
+    a_C = vgg_model_outputs(preprocessed_content)
+
+    # Style encoder
+    # Define activation encoding for the style image (a_S)
+    # Assign style image as the input of VGG19
+    preprocessed_style = tf.Variable(
+        tf.image.convert_image_dtype(style_image, tf.float32)
+    )
+    a_S = vgg_model_outputs(preprocessed_style)
+
+    # Initialize the optimizer
+    optimizer = tf.keras.optimizers.Adam(learning_rate=0.01)
+    # Need to redefine the clipped image as a tf.variable to be optimized
+    generated_image = tf.Variable(generated_image)
+
+    # Check if GPU is available
+    print("Num GPUs Available: ", len(tf.config.list_physical_devices("GPU")))
+
+    # Train the model
+    epochs = int(epochs)
+    for i in range(epochs):
+        trainer(
+            generated_image, vgg_model_outputs, style_layers, optimizer, a_C, a_S
         )
-        # Lock in the model weights
-        vgg.trainable = False
+        if i % 500 == 0:
+            print(f"Epoch {i} >>>")
 
-        # Load Content and Style images
-        content_image = preprocess_image(content, image_size)
-        style_image = preprocess_image(style, image_size)
-
-        # Randomly initialize Generated image
-        # Define the generated image as as tensorflow variable to optimize
-        generated_image = tf.Variable(
-            tf.image.convert_image_dtype(content_image, tf.float32)
-        )
-        # Add random noise to initial generated image
-        noise = tf.random.uniform(tf.shape(generated_image), -0.25, 0.25)
-        generated_image = tf.add(generated_image, noise)
-        generated_image = tf.clip_by_value(
-            generated_image, clip_value_min=0.0, clip_value_max=1.0
-        )
-
-        # Define output layers
-        style_layers = get_style_layers(similarity=similarity)
-        content_layer = [("block5_conv4", 1)]  # The last layer of VGG19
-
-        vgg_model_outputs = get_layer_outputs(vgg, style_layers + content_layer)
-
-        # Content encoder
-        # Define activation encoding for the content image (a_C)
-        # Assign content image as the input of VGG19
-        preprocessed_content = tf.Variable(
-            tf.image.convert_image_dtype(content_image, tf.float32)
-        )
-        a_C = vgg_model_outputs(preprocessed_content)
-
-        # Style encoder
-        # Define activation encoding for the style image (a_S)
-        # Assign style image as the input of VGG19
-        preprocessed_style = tf.Variable(
-            tf.image.convert_image_dtype(style_image, tf.float32)
-        )
-        a_S = vgg_model_outputs(preprocessed_style)
-
-        # Initialize the optimizer
-        optimizer = tf.keras.optimizers.Adam(learning_rate=0.01)
-        # Need to redefine the clipped image as a tf.variable to be optimized
-        generated_image = tf.Variable(generated_image)
-
-        # Check if GPU is available
-        print("Num GPUs Available: ", len(tf.config.list_physical_devices("GPU")))
-
-        # Train the model
-        epochs = int(epochs)
-        for i in range(epochs):
-            trainer(
-                generated_image, vgg_model_outputs, style_layers, optimizer, a_C, a_S
-            )
-            if i % 500 == 0:
-                print(f"Epoch {i} >>>")
-
-        # Resize to original size and save
-        image = tensor_to_image(generated_image)
-        image = image.resize((content_width, content_height))
-        image.save(save + ".jpg")
-        print("Image saved.")
-
-    except Exception as message:
-        print(message)
+    # Resize to original size and save
+    image = tensor_to_image(generated_image)
+    image = image.resize((content_width, content_height))
+    image.save(save + ".jpg")
+    print("Image saved.")
 ```
 
 <br>
