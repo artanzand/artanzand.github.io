@@ -42,7 +42,7 @@ Create an image with multiple layers
 
 # U-Net Architecture
 
-U-Net, named after its U-shape, was originally created in 2015 for biomedical image segmentation (Ronneberger et al. (2015) [paper](https://arxiv.org/abs/1505.04597)), but soon became very popular for other semantic segmentation tasks.
+U-Net, named after its U-shape, was originally created in 2015 for biomedical image segmentation (Ronneberger et al. (2015) [paper](https://arxiv.org/abs/1505.04597)), but soon became very popular for other semantic segmentation tasks. Note that due to computational constraints I have reduced the number of filters and steps used in the original paper.
 <center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/U-net.JPG?raw=True"></center>
 <caption><center>U-Net Architecture used for this project</center></caption>
 
