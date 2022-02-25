@@ -9,7 +9,7 @@ excerpt: "In a second phase of my Neural Style Transfer model, I have applied Se
 In a second phase of my Neural Style Transfer (NST) model (see [NST project](https://artanzand.github.io//neural-style-transfer/) and [repo](https://github.com/artanzand/neural_style_transfer)), I have applied Semantic Segmentation to exclude person figures from the style transfer (see [Segmentation repo](https://github.com/artanzand/image_segmentation_NST) for reproducible code). In this post, I will be going over the U-Net architecture and the project pipeline used to achieve this. This project is inspired by a stylized image of a child riding a bicycle which I came across with in a research paper ([Kasten et al. (2021)](https://layered-neural-atlases.github.io/)) by Adobe Research team.
 
 <center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/Adobe_stylized.jpg?raw=True" width=600></center>
-<caption><center>[1] Cropped out figure from stylized background (Kasten et al.(2021))(</center></caption>  
+<caption><center>[1] Cropped out figure from stylized background (Kasten et al. (2021))</center></caption>  
 <br>
 
 # Motivation
@@ -37,9 +37,7 @@ We will be building a special type of Convolutional Neural Networks (CNN) design
 
 A major source of confusion is the difference between object detection and image segmentation. The similarity is that both techniques intend to answer the question: "What objects are present in this image and what are the locations of thos objects?". The main difference is that the objective of object detection techniques like [YOLO](https://arxiv.org/abs/1506.02640) is to label objects by bounding boxes whereas semantic image segmentation aims to predict a pixel precise mask for each object in the image by labeling each pixel in the image with its corresponding class.
 
-For reproducibility purposes and to allow for faster training of our model, I have opted for a dataset that would only label person figures. The technique can, however, be generalized to image segmentation for multiple classes, and in my post I will be referring to the respective changes in the general code and concept.
-
-Create an image with multiple layers
+For reproducibility purposes and to allow for faster training of my model on the cloud, I have opted for a smaller-size [dataset](https://www.kaggle.com/nikhilroxtomar/person-segmentation) that would only label person figures. The technique can, however, be generalized to image segmentation for multiple classes, and in my post I will be referring to the respective changes in the general code and concept.
 
 <br>
 
@@ -122,7 +120,7 @@ The decoder block takes in two arguments:
 - expansive_input - The input tensor from the previous layer, and;
 - contractive_input - the input tensor from the previous skip layer in the encoder section  
 
-The number of filters will be the same as each corresponding encoder block. We will apply transpose convolution on the expansive_input, or the input tensor from the previous layer. We will then merge the output of the transpose convolution layer with contractive_input using the `concatenate()` function to create the skip connection. Skip connection is the step that allows for the capture of finer information from the earlier layers of the network where shape details were still present. We will apply two convolution layers at the end of this block.
+The number of filters will be the same as each corresponding encoder block. We will apply transpose convolution on the expansive_input, or the input tensor from the previous layer. We will then merge the output of the transpose convolution layer with contractive_input using the `tf.concatenate()` function to create the skip connection. Skip connection is the step that allows for the capture of finer information from the earlier layers of the network where shape details were still present. We will apply two convolution layers at the end of this block.
 
 ```python
 def decoder_block(expansive_input, contractive_input, n_filters=32):
@@ -154,10 +152,82 @@ def decoder_block(expansive_input, contractive_input, n_filters=32):
 
 <br>
 
-## Putting it together
+## Building the Model
 
-Talk about multiple output layers
-talk about the optimizer option
+This is where the model blocks are put together by chaining encoders, connections, and decoders. We will need to identify the number of classes (`n_classes`) of the final output image. Connecting the inputs and outputs of each layer is not hard if we follow the U-Net diagram, but let's step out for a short minute to clarify how what the number of classes should be and the desired shape of an output tensor.
+
+In semantic segmentation, we need as many masks as we have object classes.Classes in the output tensor are defined by channels. For example, if we have 4 classes, we will have an output with the same height and width as the input image, but with 4 channels with values of each cell in a channel representing the probabilities of that pixel belonging to that channel. The intuition is that when predicting we will get the `argmax()` of the pixels in the last dimension of the tensor (the four channels in our example) to come up with the final prediction for that pixel. For the case of my model because I was only interested in identifying the pixels containing human figures, I selected a dataset that would satisfy my objective. Therefore, I will have only one class (output channel) in my model.  
+
+channel images
+
+Now let's go back to the model. The function is comprised of two sections. The first half is where we use the encoder_block, and chain the first output of each block to the next one. We take a note of the second output of the encoder_block for later in the Decoder section. As per the paper recommendations we will be doubling the number of filters while MaxPooling in each block will divide the height and width by two. On the fifth block, also known as the Bottleneck (for obvious reasones!), we will be turning the MaxPooling off since we will be entering the second section where we need to upsample.  
+
+Decoder blocks in the second section will be expanding the size of the image. This time we will chain the expanded output of the previous block with the second output from the corresponding encoder block. At each step, we will half the number of filter. `conv9` is a convolution layer with he_normal initializer. At this stage, we will have an output with exactly the same shape as the input. Finally, on the output layer `conv10` we will use a convolutional layer with a kernel size of 1 to bring the number of channels to our desired number of classes (1 in case of this project).
+
+```python
+def U_Net(input_size=(320, 320, 3), n_filters=32, n_classes=1):
+    """ """
+    inputs = Input(input_size)
+
+    # Encoder section
+    #================
+    # Double the number of filters at each new step
+    # The first element of encoder_block is input to the next layer
+    eblock1 = encoder_block(inputs, n_filters)
+    eblock2 = encoder_block(eblock1[0], n_filters * 2)
+    eblock3 = encoder_block(eblock2[0], n_filters * 4)
+    eblock4 = encoder_block(eblock3[0], n_filters * 8, dropout=0.3)
+    eblock5 = encoder_block(eblock4[0], n_filters * 16, dropout=0.3, max_pooling=False)
+
+    # Decoder section
+    #================
+    # Chain the output of the previous block as expansive_input and the corresponding contractive block output
+    # The second element of encoder_block is input to the skip connection
+    # Halving the number of filters of the previous block in each section
+    dblock6 = decoder_block(
+        expansive_input=eblock5[1], contractive_input=eblock4[1], n_filters=n_filters * 8
+    )
+    dblock7 = decoder_block(
+        expansive_input=dblock6, contractive_input=eblock3[1], n_filters=n_filters * 4
+    )
+    dblock8 = decoder_block(
+        expansive_input=dblock7, contractive_input=eblock2[1], n_filters=n_filters * 2
+    )
+    dblock9 = decoder_block(
+        expansive_input=dblock8, contractive_input=eblock1[1], n_filters=n_filters
+    )
+
+    conv9 = Conv2D(
+        n_filters, 3, activation="relu", padding="same", kernel_initializer="he_normal"
+    )(dblock9)
+
+    # Add a 1x1 Conv2D (projection) layer with n_classes filters to adjust number of output channels
+    conv10 = Conv2D(filters=n_classes, kernel_size=1, padding="same")(conv9)
+
+    model = tf.keras.Model(inputs=inputs, outputs=conv10)
+
+    return model
+```
+
+Next, we will instantiate the model and compile it. Adam is the optimizer of choice, but other optimizers work as well. For the loss function we use BinaryCrossentropy (since we have person(1) or not person(0)), and accuracy is our metric. Extra details about loading the data and fitting the model can be found in `train.py` in this [repo](https://github.com/artanzand/image_segmentation_NST/blob/main/src/train.py).
+
+```python
+unet = U_Net()
+unet.compile(
+        optimizer="adam",
+        loss=tf.keras.losses.BinaryCrossentropy(from_logits=False),
+        metrics=["accuracy"],
+    )
+```
+
+> Note that when using more than one class, we will be dealing with a very sparse tensor, and therefore, it is recommended to use `SparseCategoricalCrossentropy()` for computational efficiency.  
+
+```python
+unet.compile(optimizer='adam',
+              loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+               metrics=['accuracy'])
+```
+
 <br>
 
 # Neural Style Transfer + Segmentation
@@ -174,6 +244,7 @@ The final ingredient
 <caption><center>Evolution of NST with Semantic Image Segmentation</center></caption>
 
 process improvement for computation efficiency
+Add more classes
 
 ## References
 
