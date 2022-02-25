@@ -63,8 +63,7 @@ To build the U-Net model we need two blocks. Each step in the U-Net diagram is c
 
 ## Encoder Block
 
-<center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/encoder_block.JPG?raw=True" width=400></center>
-<caption><center>Encoder block</center></caption>  
+<center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/encoder_block.JPG?raw=True" width=200></center>
 <br>
 
 Each decoder block is comprised of two Convolution layers with ReLU activations. As per the original [paper](https://arxiv.org/abs/1505.04597)'s instructions we will apply Dropout, and MaxPooling to some of the decoder blocks, specifically to the last two blocks of the downsampling, and our function will, therefore, need to allow for that.
@@ -74,7 +73,7 @@ The function will return two outputs:
 - next_layer: The tensor that will go into the next block.
 - skip_connection: The tensor that will go into the matching decoding block.
 
-Here is a reduced version of the encoder block in Tensorflow.
+Here is a reduced version of the encoder block in Tensorflow. I am initializing my kernels with [he_normal](https://www.tensorflow.org/api_docs/python/tf/keras/initializers/HeNormal). Also note that when `max_pooling` is set to `True`, the next_layer will be the output of the MaxPooling layer, but the skip_connection will be the output of the previously applied layer. Else, both results will be identical. `max_pooling` will be set to false in the fifth encoder block where the resultant tensor is directly fed into the decoder block.
 
 ```python
 def encoder_block(inputs=None, n_filters=32, dropout=0, max_pooling=True):
@@ -115,8 +114,35 @@ def encoder_block(inputs=None, n_filters=32, dropout=0, max_pooling=True):
 ## Decoder Block
 
 <center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/decoder_block.JPG?raw=True" width=300></center>
-<caption><center>Decoder block</center></caption>  
 <br>
+
+```python
+def decoder_block(expansive_input, contractive_input, n_filters=32):
+    """ """
+    up = Conv2DTranspose(
+        filters=n_filters, kernel_size=(3, 3), strides=2, padding="same"
+    )(expansive_input)
+
+    # Merge the previous output and the contractive_input
+    # The order of concatenation for channels doesn't matter
+    merge = concatenate([up, contractive_input], axis=3)
+    conv = Conv2D(
+        filters=n_filters,
+        kernel_size=3,
+        activation="relu",
+        padding="same",
+        kernel_initializer="he_normal",
+    )(merge)
+    conv = Conv2D(
+        filters=n_filters,
+        kernel_size=3,
+        activation="relu",
+        padding="same",
+        kernel_initializer="he_normal",
+    )(conv)
+
+    return conv
+```
 
 ## Putting it together
 
