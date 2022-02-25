@@ -6,7 +6,7 @@ date: Feb 24, 2022
 excerpt: "In a second phase of my Neural Style Transfer model, I have applied Semantic Segmentation to exclude person figures from the style transfer. In this post, I will be going over the U-Net architecture and the project pipeline used to achieve this."
 ---
 
-In a second phase of my Neural Style Transfer model (see [project](https://artanzand.github.io//neural-style-transfer/) and [repo](https://github.com/artanzand/neural_style_transfer)), I have applied Semantic Segmentation to exclude person figures from the style transfer (see [repo] for reproducible code). In this post, I will be going over the U-Net architecture and the project pipeline used to achieve this. This project is inspired by a stylized image of a child riding a bicycle which I came across with in a research paper ([Kasten et al. (2021)](https://layered-neural-atlases.github.io/)) by Adobe Research team.
+In a second phase of my Neural Style Transfer (NST) model (see [NST project](https://artanzand.github.io//neural-style-transfer/) and [repo](https://github.com/artanzand/neural_style_transfer)), I have applied Semantic Segmentation to exclude person figures from the style transfer (see [Segmentation repo](https://github.com/artanzand/image_segmentation_NST) for reproducible code). In this post, I will be going over the U-Net architecture and the project pipeline used to achieve this. This project is inspired by a stylized image of a child riding a bicycle which I came across with in a research paper ([Kasten et al. (2021)](https://layered-neural-atlases.github.io/)) by Adobe Research team.
 
 <center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/Adobe_stylized.jpg?raw=True" width=600></center>
 <br>
@@ -45,11 +45,12 @@ Create an image with multiple layers
 U-Net, named after its U-shape, was originally created in 2015 for biomedical image segmentation (Ronneberger et al. (2015) [paper](https://arxiv.org/abs/1505.04597)), but soon became very popular for other semantic segmentation tasks. Note that due to computational constraints I have reduced the number of filters and steps used in the original paper.
 <center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/U-net.JPG?raw=True"></center>
 <caption><center>U-Net Architecture used for this project</center></caption>
+<br>
 
 U-Net is based on the Fully Convolutional Network (FCN) which is comprised of two main sections; an encoder section which downsamples the input image (similar to a typical CNN network), and a decoder section which replaces the dense layer found in the output layer of CNN with transposed convolution layer (see diagram below on how transposed convolutions work) that upsample the feature map back to the size of the original input image. A major downfall of an FCN is that the final feature layer of the FCN suffers from information loss due to excessive downsampling which are required for inference. Solving this issue is necessary because the dense layers destroy spatial information which is the most essential part of image segmentation tasks.  
 
 <center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/transpose_conv.gif?raw=True"></center>
-<caption><center>Transpose Convolution ([image reference](https://towardsdatascience.com/review-fcn-semantic-segmentation-eb8c9b50d2d1))</center></caption>  
+<caption><center>[6] Transpose Convolution</center></caption>  
 <br>
 
 U-Net improves on the FCN by introducing skip connections shown by green arrows in the U-Net diagram which are critical for preserving the spatial information. Further to that and instead of one transposed convolution at the end of the network, U-Net uses a matching number of transposed convolutions for upsampling (decoding) to those used for downsampling (encoding). This will map the encoded image back up to the original input image size. The role of skip connections is to retain information that would otherwise become lost during encoding. Skip connections send information to every upsampling layer in the decoder from the corresponding downsampling layer in the encoder, capturing finer information while also reducing computation cost.
@@ -57,15 +58,64 @@ U-Net improves on the FCN by introducing skip connections shown by green arrows 
 To build the U-Net model we need two blocks. Each step in the U-Net diagram is considered a block.
 
 1. Encoder block - A series of convolution layers followed by maxpooling
-2. Decoder block - A transposed convolution layer followed by convolution layers
+2. Decoder block - A transposed convolution layer followed by convolution layers  
 <br>
 
 ## Encoder Block
+
+<center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/encoder_block.JPG?raw=True" width=400></center>
+<caption><center>Encoder block</center></caption>  
+<br>
+
+Each decoder block is comprised of two Convolution layers with ReLU activations. As per the original [paper](https://arxiv.org/abs/1505.04597)'s instructions we will apply Dropout, and MaxPooling to some of the decoder blocks, specifically to the last two blocks of the downsampling, and our function will, therefore, need to allow for that.
+
+The function will return two outputs:
+
+- next_layer: The tensor that will go into the next block.
+- skip_connection: The tensor that will go into the matching decoding block.
+
+Here is a reduced version of the encoder block in Tensorflow.
+
+```python
+def encoder_block(inputs=None, n_filters=32, dropout=0, max_pooling=True):
+    """ """
+    conv = Conv2D(
+        filters=n_filters,
+        kernel_size=3,
+        activation="relu",
+        padding="same",
+        kernel_initializer="he_normal",
+    )(inputs)
+    conv = Conv2D(
+        filters=n_filters,
+        kernel_size=3,
+        activation="relu",
+        padding="same",
+        kernel_initializer="he_normal",
+    )(conv)
+
+    # Add dropout if existing
+    if dropout > 0:
+        conv = Dropout(dropout)(conv)
+
+    # Add MaxPooling2D with 2x2 pool_size
+    if max_pooling:
+        next_layer = MaxPooling2D(pool_size=(2, 2))(conv)
+
+    else:
+        next_layer = conv
+
+    skip_connection = conv  # excluding maxpool from skip connection
+
+    return next_layer, skip_connection
+```
 
 <br>
 
 ## Decoder Block
 
+<center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/decoder_block.JPG?raw=True" width=300></center>
+<caption><center>Decoder block</center></caption>  
 <br>
 
 ## Putting it together
@@ -87,4 +137,5 @@ process improvement for computation efficiency
 [2] Kasten, Yoni, et al. "Layered neural atlases for consistent video editing." ACM Transactions on Graphics (TOG) 40.6 (2021): [link to paper](https://arxiv.org/pdf/2109.11418.pdf)  
 [3] [DeepLearning.ai](https://www.deeplearning.ai/) Deep Learning Specialization lecture notes  
 [4] Image Segmentation with DeepLabV3Plus: [link to repo](https://github.com/nikhilroxtomar/Human-Image-Segmentation-with-DeepLabV3Plus-in-TensorFlow)
-[5] Style image [reference](https://androidphototips.com/5-best-painting-apps-that-turn-your-iphone-photos-into-paintings/)
+[5] Style image [reference](https://androidphototips.com/5-best-painting-apps-that-turn-your-iphone-photos-into-paintings/)  
+[6] Transpose Convolution ([image reference](https://towardsdatascience.com/review-fcn-semantic-segmentation-eb8c9b50d2d1))
