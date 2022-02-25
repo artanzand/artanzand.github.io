@@ -152,6 +152,8 @@ def decoder_block(expansive_input, contractive_input, n_filters=32):
     return conv
 ```
 
+<br>
+
 ## Putting it together
 
 Talk about multiple output layers
@@ -161,14 +163,14 @@ talk about the optimizer option
 # Neural Style Transfer + Segmentation
 
 <center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/semantic_diagram.JPG?raw=True"></center>
-<caption><center>Semantic Segmentation pipeline</center></caption>
+<caption><center>Semantic Image Segmentation pipeline</center></caption>
 
 The final ingredient
 <br>
 
 # Result and Final Thoughts
 
-<center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/evolution.PNG?raw=True"></center>
+<center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/evolution.gif?raw=True"></center>
 <caption><center>Evolution of NST with Semantic Image Segmentation</center></caption>
 
 process improvement for computation efficiency
