@@ -3,12 +3,12 @@ layout: post
 title: Semantic Segmentation with U-Net
 author: Artan Zandian
 date: Feb 24, 2022
-excerpt: "In a second phase of my Neural Style Transfer model (see [project](https://artanzand.github.io//neural-style-transfer/) and [repo](https://github.com/artanzand/neural_style_transfer)), I have applied Semantic Segmentation to exclude person figures from the style transfer. In this post, I will be going over the U-Net architecture and the project pipeline used to achieve this."
+excerpt: "In a second phase of my Neural Style Transfer model, I have applied Semantic Segmentation to exclude person figures from the style transfer. In this post, I will be going over the U-Net architecture and the project pipeline used to achieve this."
 ---
 
-In a second phase of my Neural Style Transfer model (see [project](https://artanzand.github.io//neural-style-transfer/) and [repo](https://github.com/artanzand/neural_style_transfer)), I have applied Semantic Segmentation to exclude person figures from the style transfer. In this post, I will be going over the U-Net architecture and the project pipeline used to achieve this. This project is inspired by a stylized image of a child riding a bicycle which I came across with in a research paper ([Kasten et. al (2021)](https://layered-neural-atlases.github.io/)) by Adobe Research team.
+In a second phase of my Neural Style Transfer model (see [project](https://artanzand.github.io//neural-style-transfer/) and [repo](https://github.com/artanzand/neural_style_transfer)), I have applied Semantic Segmentation to exclude person figures from the style transfer (see [repo] for reproducible code). In this post, I will be going over the U-Net architecture and the project pipeline used to achieve this. This project is inspired by a stylized image of a child riding a bicycle which I came across with in a research paper ([Kasten et al. (2021)](https://layered-neural-atlases.github.io/)) by Adobe Research team.
 
-<center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/Adobe_stylized.jpg?raw=True" width=400></center>
+<center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/Adobe_stylized.jpg?raw=True" width=600></center>
 <br>
 
 # Motivation
@@ -24,18 +24,38 @@ Our main objective for this project is to find masks which we would help us isol
 <center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/masks.JPG?raw=True" width=400></center>
 <br>
 
-The below diagrams shows the overal pipeline. We have two neural networks. Neural Style Transfer is in charge of creating stylized images which has already been created in my [previous project](https://artanzand.github.io//neural-style-transfer/), and Semantic Segmentation network will be generating tensors of zeros and ones. The outputs of Semantic segmentation will create the stylized bachground and the figure cutout when multiplied by the stylized and content image respectively. The final output is a summation of the two isolated pieces.
+The below diagrams shows the overall pipeline. We have two neural networks. Neural Style Transfer is in charge of creating stylized images which has already been modeled in my [previous project](https://artanzand.github.io//neural-style-transfer/), and Semantic Segmentation network, which we will walk through in this post, will be generating tensors of zeros and ones. The outputs of Semantic segmentation will create the stylized bachground and the figure cutout when multiplied by the stylized and content image respectively. The final output is a summation of the two isolated pieces.
 <center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/NST_segmentation_framework.JPG?raw=True"></center>
 <br>
 
-# Semantic Segmentation
+# Semantic Image Segmentation
+
+We will be building a special type of Convolutional Neural Networks (CNN) designed for quick and precise image segmentation. The predicted result of this network will be in shape of a label for every single pixel in an image. This is referred to as pixelwise prediction in the literature. This method of image classification is called semantic image classification and plays a critical role in self-driving cars which demand a perfect understanding of the surounding environment so that they avoid other cars and people, or change lanes.
+
+A major source of confusion is the difference between object detection and image segmentation. The similarity is that both techniques intend to answer the question: "What objects are present in this image and what are the locations of thos objects?". The main difference is that the objective of object detection techniques like [YOLO](https://arxiv.org/abs/1506.02640) is to label objects by bounding boxes whereas semantic image segmentation aims to predict a pixel precise mask for each object in the image by labeling each pixel in the image with its corresponding class.
+
+For reproducibility purposes and to allow for faster training of our model, I have opted for a dataset that would only label person figures. The technique can, however, be generalized to image segmentation for multiple classes, and in my post I will be referring to the respective changes in the general code and concept.
+
+Create an image with multiple layers
 
 <br>
 
 # U-Net Architecture
 
-<br>
 image diagram
+
+U-Net, named after its U-shape, was originally created in 2015 for biomedical image segmentation (Ronneberger et al. (2015) [paper](https://arxiv.org/abs/1505.04597)), but soon became very popular for other semantic segmentation tasks.
+
+<center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/U-net.JPG?raw=True"></center>
+<br>
+
+U-Net builds on a previous architecture called the Fully Convolutional Network, or FCN, which replaces the dense layers found in a typical CNN with a transposed convolution layer that upsamples the feature map back to the size of the original input image, while preserving the spatial information. This is necessary because the dense layers destroy spatial information (the "where" of the image), which is an essential part of image segmentation tasks. An added bonus of using transpose convolutions is that the input size no longer needs to be fixed, as it does when dense layers are used.
+
+Unfortunately, the final feature layer of the FCN suffers from information loss due to downsampling too much. It then becomes difficult to upsample after so much information has been lost, causing an output that looks rough.
+
+U-Net improves on the FCN, using a somewhat similar design, but differing in some important ways. Instead of one transposed convolution at the end of the network, it uses a matching number of convolutions for downsampling the input image to a feature map, and transposed convolutions for upsampling those maps back up to the original input image size. It also adds skip connections, to retain information that would otherwise become lost during encoding. Skip connections send information to every upsampling layer in the decoder from the corresponding downsampling layer in the encoder, capturing finer information while also keeping computation low. These help prevent information loss, as well as model overfitting.
+
+<br>
 
 ## Encoder Block
 
@@ -57,4 +77,5 @@ process improvement for computation efficiency
 
 ## References
 
-[1] Yoni Kasten, Dolev Ofri, Oliver Wang, Tali Dekel. "Layered Neural Atlases for Consistent Video Editing" SIGGRAPH Asia (2021): [link to paper](https://arxiv.org/pdf/2109.11418.pdf)  
+[1] Ronneberger, Olaf, Philipp Fischer, and Thomas Brox. "U-net: Convolutional networks for biomedical image segmentation." International Conference on Medical image computing and computer-assisted intervention. Springer, Cham, 2015.: [link to paper](https://arxiv.org/abs/1505.04597)  
+[2] Kasten, Yoni, et al. "Layered neural atlases for consistent video editing." ACM Transactions on Graphics (TOG) 40.6 (2021): [link to paper](https://arxiv.org/pdf/2109.11418.pdf)  
