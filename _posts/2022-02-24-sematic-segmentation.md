@@ -9,23 +9,26 @@ excerpt: "In a second phase of my Neural Style Transfer model, I have applied Se
 In a second phase of my Neural Style Transfer (NST) model (see [NST project](https://artanzand.github.io//neural-style-transfer/) and [repo](https://github.com/artanzand/neural_style_transfer)), I have applied Semantic Segmentation to exclude person figures from the style transfer (see [Segmentation repo](https://github.com/artanzand/image_segmentation_NST) for reproducible code). In this post, I will be going over the U-Net architecture and the project pipeline used to achieve this. This project is inspired by a stylized image of a child riding a bicycle which I came across with in a research paper ([Kasten et al. (2021)](https://layered-neural-atlases.github.io/)) by Adobe Research team.
 
 <center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/Adobe_stylized.jpg?raw=True" width=600></center>
+<caption><center>[1] Cropped out figure from stylized background (Kasten et al.(2021))(</center></caption>  
 <br>
 
 # Motivation
 
 So far, we have been able to created a stylized version of an image using Neural style Transfer (see this [post](https://artanzand.github.io//neural-style-transfer/) for walkthrough of that project). This works perfect if the intention is to stylize the whole image and where the partial details of the original image do not matter. A simple use case of this is for stylizing a scenary image. However, as shown in the example image below when human figures appear in a "content" image, the results of the generated stylized image are not satisfactory. To overcome this issue, our neural network pipeline needs to somehow learn where the people are in an image and cut them out.
 <center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/nst_problem.JPG?raw=True"></center>
+<caption><center>Failure in application of NST on images containing figures</center></caption>
 <br>
 
 # General Guideline
 
-<br>
 Our main objective for this project is to find masks which we would help us isolate the figure image from its background and vice versa. Masks are defined as tensors of 0's and 1's in this context, and when multiplied by by an image tensor produce our desired cutouts. For our purpose we will need two masks were one is the complement of the other. For example, if we have the figure mask as tensor Y, the background mask can be calculated by 1 - Y.
 <center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/masks.JPG?raw=True" width=400></center>
+<caption><center>Figure and Background masks</center></caption>
 <br>
 
 The below diagrams shows the overall pipeline. We have two neural networks. Neural Style Transfer is in charge of creating stylized images which has already been modeled in my [previous project](https://artanzand.github.io//neural-style-transfer/), and Semantic Segmentation network, which we will walk through in this post, will be generating tensors of zeros and ones. The outputs of Semantic segmentation will create the stylized bachground and the figure cutout when multiplied by the stylized and content image respectively. The final output is a summation of the two isolated pieces.
 <center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/NST_segmentation_framework.JPG?raw=True"></center>
+<caption><center>Project pipeline</center></caption>
 <br>
 
 # Semantic Image Segmentation
@@ -47,7 +50,7 @@ U-Net, named after its U-shape, was originally created in 2015 for biomedical im
 <caption><center>U-Net Architecture used for this project</center></caption>
 <br>
 
-U-Net is based on the Fully Convolutional Network (FCN) which is comprised of two main sections; an encoder section which downsamples the input image (similar to a typical CNN network), and a decoder section which replaces the dense layer found in the output layer of CNN with transposed convolution layer (see diagram below on how transposed convolutions work) that upsample the feature map back to the size of the original input image. A major downfall of an FCN is that the final feature layer of the FCN suffers from information loss due to excessive downsampling which are required for inference. Solving this issue is necessary because the dense layers destroy spatial information which is the most essential part of image segmentation tasks.  
+U-Net is based on the Fully Convolutional Network (FCN) which is comprised of two main sections; an encoder section which downsamples the input image (similar to a typical CNN network), and a decoder section which replaces the dense layer found in the output layer of CNN with transposed convolution layer (see diagram below on how transposed convolution works) that upsample the feature map back to the size of the original input image. A major downfall of an FCN is that the final feature layer of the FCN suffers from information loss due to excessive downsampling which are required for inference. Solving this issue is necessary because the dense layers destroy spatial information which is the most essential part of image segmentation tasks.  
 
 <center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/transpose_conv.gif?raw=True"></center>
 <caption><center>[6] Transpose Convolution</center></caption>  
@@ -64,7 +67,6 @@ To build the U-Net model we need two blocks. Each step in the U-Net diagram is c
 ## Encoder Block
 
 <center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/encoder_block.JPG?raw=True" width=400></center>
-<br>
 
 Each decoder block is comprised of two Convolution layers with ReLU activations. As per the original [paper](https://arxiv.org/abs/1505.04597)'s instructions we will apply Dropout, and MaxPooling to some of the decoder blocks, specifically to the last two blocks of the downsampling, and our function will, therefore, need to allow for that.
 
@@ -114,17 +116,13 @@ def encoder_block(inputs=None, n_filters=32, dropout=0, max_pooling=True):
 ## Decoder Block
 
 <center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/decoder_block.JPG?raw=True" width=150></center>
-<br>
 
-For the function decoder block:
+The decoder block takes in two arguments:  
 
-Takes the arguments expansive_input (which is the input tensor from the previous layer) and contractive_input (the input tensor from the previous skip layer)
-The number of filters here is the same as in the downsampling block you completed previously
-Your Conv2DTranspose layer will take n_filters with shape (3,3) and a stride of (2,2), with padding set to same. It's applied to expansive_input, or the input tensor from the previous layer.
-This block is also where you'll concatenate the outputs from the encoder blocks, creating skip connections.
+- expansive_input - The input tensor from the previous layer, and;
+- contractive_input - the input tensor from the previous skip layer in the encoder section  
 
-Concatenate your Conv2DTranspose layer output to the contractive input, with an axis of 3. In general, you can concatenate the tensors in the order that you prefer. But for the grader, it is important that you use [up, contractive_input]
-For the final component, set the parameters for two Conv2D layers to the same values that you set for the two Conv2D layers in the encoder (ReLU activation, He normal initializer, same padding).  
+The number of filters will be the same as each corresponding encoder block. We will apply transpose convolution on the expansive_input, or the input tensor from the previous layer. We will then merge the output of the transpose convolution layer with contractive_input using the `concatenate()` function to create the skip connection. Skip connection is the step that allows for the capture of finer information from the earlier layers of the network where shape details were still present. We will apply two convolution layers at the end of this block.
 
 ```python
 def decoder_block(expansive_input, contractive_input, n_filters=32):
@@ -156,21 +154,29 @@ def decoder_block(expansive_input, contractive_input, n_filters=32):
 
 ## Putting it together
 
+Talk about multiple output layers
+talk about the optimizer option
 <br>
 
 # Neural Style Transfer + Segmentation
 
+<center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/semantic_diagram.JPG?raw=True"></center>
+<caption><center>Semantic Segmentation pipeline</center></caption>
+
 The final ingredient
 <br>
 
-# Final Thoughts
+# Result and Final Thoughts
+
+<center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/evolution.PNG?raw=True"></center>
+<caption><center>Evolution of NST with Semantic Image Segmentation</center></caption>
 
 process improvement for computation efficiency
 
 ## References
 
-[1] Ronneberger, Olaf, Philipp Fischer, and Thomas Brox. "U-net: Convolutional networks for biomedical image segmentation." International Conference on Medical image computing and computer-assisted intervention. Springer, Cham, 2015.: [link to paper](https://arxiv.org/abs/1505.04597)  
-[2] Kasten, Yoni, et al. "Layered neural atlases for consistent video editing." ACM Transactions on Graphics (TOG) 40.6 (2021): [link to paper](https://arxiv.org/pdf/2109.11418.pdf)  
+[1] Kasten, Yoni, et al. "Layered neural atlases for consistent video editing." ACM Transactions on Graphics (TOG) 40.6 (2021): [link to paper](https://arxiv.org/pdf/2109.11418.pdf)  
+[2] Ronneberger, Olaf, Philipp Fischer, and Thomas Brox. "U-net: Convolutional networks for biomedical image segmentation." International Conference on Medical image computing and computer-assisted intervention. Springer, Cham, 2015.: [link to paper](https://arxiv.org/abs/1505.04597)  
 [3] [DeepLearning.ai](https://www.deeplearning.ai/) Deep Learning Specialization lecture notes  
 [4] Image Segmentation with DeepLabV3Plus: [link to repo](https://github.com/nikhilroxtomar/Human-Image-Segmentation-with-DeepLabV3Plus-in-TensorFlow)
 [5] Style image [reference](https://androidphototips.com/5-best-painting-apps-that-turn-your-iphone-photos-into-paintings/)  
