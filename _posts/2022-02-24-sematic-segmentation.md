@@ -42,19 +42,22 @@ Create an image with multiple layers
 
 # U-Net Architecture
 
-image diagram
-
 U-Net, named after its U-shape, was originally created in 2015 for biomedical image segmentation (Ronneberger et al. (2015) [paper](https://arxiv.org/abs/1505.04597)), but soon became very popular for other semantic segmentation tasks.
-
 <center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/U-net.JPG?raw=True"></center>
+<caption><center>U-Net Architecture used for this project</center></caption>
+
+U-Net is based on the Fully Convolutional Network (FCN) which is comprised of two main sections; an encoder section which downsamples the input image (similar to a typical CNN network), and a decoder section which replaces the dense layer found in the output layer of CNN with transposed convolution layer (see diagram below on how transposed convolutions work) that upsample the feature map back to the size of the original input image. A major downfall of an FCN is that the final feature layer of the FCN suffers from information loss due to excessive downsampling which are required for inference. Solving this issue is necessary because the dense layers destroy spatial information which is the most essential part of image segmentation tasks.  
+
+<center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/transpose_conv.gif?raw=True"></center>
+<caption><center>Transpose Convolution ([image reference](https://towardsdatascience.com/review-fcn-semantic-segmentation-eb8c9b50d2d1))</center></caption>  
 <br>
 
-U-Net builds on a previous architecture called the Fully Convolutional Network, or FCN, which replaces the dense layers found in a typical CNN with a transposed convolution layer that upsamples the feature map back to the size of the original input image, while preserving the spatial information. This is necessary because the dense layers destroy spatial information (the "where" of the image), which is an essential part of image segmentation tasks. An added bonus of using transpose convolutions is that the input size no longer needs to be fixed, as it does when dense layers are used.
+U-Net improves on the FCN by introducing skip connections shown by green arrows in the U-Net diagram which are critical for preserving the spatial information. Further to that and instead of one transposed convolution at the end of the network, U-Net uses a matching number of transposed convolutions for upsampling (decoding) to those used for downsampling (encoding). This will map the encoded image back up to the original input image size. The role of skip connections is to retain information that would otherwise become lost during encoding. Skip connections send information to every upsampling layer in the decoder from the corresponding downsampling layer in the encoder, capturing finer information while also reducing computation cost.
 
-Unfortunately, the final feature layer of the FCN suffers from information loss due to downsampling too much. It then becomes difficult to upsample after so much information has been lost, causing an output that looks rough.
+To build the U-Net model we need two blocks. Each step in the U-Net diagram is considered a block.
 
-U-Net improves on the FCN, using a somewhat similar design, but differing in some important ways. Instead of one transposed convolution at the end of the network, it uses a matching number of convolutions for downsampling the input image to a feature map, and transposed convolutions for upsampling those maps back up to the original input image size. It also adds skip connections, to retain information that would otherwise become lost during encoding. Skip connections send information to every upsampling layer in the decoder from the corresponding downsampling layer in the encoder, capturing finer information while also keeping computation low. These help prevent information loss, as well as model overfitting.
-
+1. Encoder block - A series of convolution layers followed by maxpooling
+2. Decoder block - A transposed convolution layer followed by convolution layers
 <br>
 
 ## Encoder Block
@@ -71,6 +74,9 @@ U-Net improves on the FCN, using a somewhat similar design, but differing in som
 
 # Neural Style Transfer + Segmentation
 
+The final ingredient
+<br>
+
 # Final Thoughts
 
 process improvement for computation efficiency
@@ -79,3 +85,6 @@ process improvement for computation efficiency
 
 [1] Ronneberger, Olaf, Philipp Fischer, and Thomas Brox. "U-net: Convolutional networks for biomedical image segmentation." International Conference on Medical image computing and computer-assisted intervention. Springer, Cham, 2015.: [link to paper](https://arxiv.org/abs/1505.04597)  
 [2] Kasten, Yoni, et al. "Layered neural atlases for consistent video editing." ACM Transactions on Graphics (TOG) 40.6 (2021): [link to paper](https://arxiv.org/pdf/2109.11418.pdf)  
+[3] [DeepLearning.ai](https://www.deeplearning.ai/) Deep Learning Specialization lecture notes  
+[4] Image Segmentation with DeepLabV3Plus: [link to repo](https://github.com/nikhilroxtomar/Human-Image-Segmentation-with-DeepLabV3Plus-in-TensorFlow)
+[5] Style image [reference](https://androidphototips.com/5-best-painting-apps-that-turn-your-iphone-photos-into-paintings/)
