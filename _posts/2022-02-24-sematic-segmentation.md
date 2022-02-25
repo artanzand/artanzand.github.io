@@ -63,7 +63,7 @@ To build the U-Net model we need two blocks. Each step in the U-Net diagram is c
 
 ## Encoder Block
 
-<center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/encoder_block.JPG?raw=True" width=200></center>
+<center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/encoder_block.JPG?raw=True" width=400></center>
 <br>
 
 Each decoder block is comprised of two Convolution layers with ReLU activations. As per the original [paper](https://arxiv.org/abs/1505.04597)'s instructions we will apply Dropout, and MaxPooling to some of the decoder blocks, specifically to the last two blocks of the downsampling, and our function will, therefore, need to allow for that.
@@ -113,8 +113,18 @@ def encoder_block(inputs=None, n_filters=32, dropout=0, max_pooling=True):
 
 ## Decoder Block
 
-<center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/decoder_block.JPG?raw=True" width=300></center>
+<center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/decoder_block.JPG?raw=True" width=150></center>
 <br>
+
+For the function decoder block:
+
+Takes the arguments expansive_input (which is the input tensor from the previous layer) and contractive_input (the input tensor from the previous skip layer)
+The number of filters here is the same as in the downsampling block you completed previously
+Your Conv2DTranspose layer will take n_filters with shape (3,3) and a stride of (2,2), with padding set to same. It's applied to expansive_input, or the input tensor from the previous layer.
+This block is also where you'll concatenate the outputs from the encoder blocks, creating skip connections.
+
+Concatenate your Conv2DTranspose layer output to the contractive input, with an axis of 3. In general, you can concatenate the tensors in the order that you prefer. But for the grader, it is important that you use [up, contractive_input]
+For the final component, set the parameters for two Conv2D layers to the same values that you set for the two Conv2D layers in the encoder (ReLU activation, He normal initializer, same padding).  
 
 ```python
 def decoder_block(expansive_input, contractive_input, n_filters=32):
