@@ -5,6 +5,17 @@ permalink: /projects/
 ---
 
 
+### Semantic Image Segmentation
+
+---
+In a second phase of my Neural Style Transfer (NST) project, I have applied semantic image segmentation to exclude person figures from the style transfer. This project deploys a U-Net deep learning architecture capable of separating person figures from their background. The image segmentation pipeline is then stacked on the NST pipeline to augment the output image.  
+
+Tools used: Tensorflow, Google Cloud Platform, data augmentation, data loading and image preprocessing
+[Link to the project post](https://artanzand.github.io//sematic-segmentation/)
+[Link to the project](https://github.com/artanzand/image_segmentation_NST)
+  
+<br>
+
 ### Neural Style Transfer
 
 ---
@@ -27,7 +38,7 @@ This is a group project on a classification problem demonstrating my teamwork pe
 ### COVID-19 Testing – Online Booking Website
 
 ---
-This is a proof-of-concept website designed at the begining of the pandemic to reduce the pressure on Public Health call centres in Calgary, Alberta caused by higher than normal volumes related to COVID-19. The website serves three main purposes: Screening of the patients, booking a time for walk-in or drive thru testing appointments, and modifying booked appointments.  
+This is a proof-of-concept website designed at the begining of the pandemic to reduce the pressure on Public Health call centres in Calgary, Alberta caused by higher than normal volumes related to COVID-19. The website serves three main purposes: Screening of the patients, booking a time for walk-in or drive thru testing appointments and storing the data in a SQL database, and modifying booked appointments.  
 
 Languages used: Python, Flask, SQL, HTML, JavaScript, CSS
 [Link to the project](https://github.com/artanzand/Final-Project---CS50)
