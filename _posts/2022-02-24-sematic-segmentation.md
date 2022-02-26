@@ -223,19 +223,54 @@ unet.compile(
 > Note that when using more than one class, we will be dealing with a very sparse tensor, and therefore, it is recommended to use `SparseCategoricalCrossentropy()` for computational efficiency.  
 
 ```python
-unet.compile(optimizer='adam',
-              loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
-               metrics=['accuracy'])
+unet.compile(
+    optimizer='adam',
+    loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+    metrics=['accuracy']
+)
 ```
 
 <br>
 
 # Neural Style Transfer + Segmentation
 
+Now that we know how to get the ingredients i.e. the figure mask from Image Segmentation and the stylized image from Neural Style Transfer, it is time to put them together to create our improved generated image. The diagram below is our roadmap.
+
 <center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/semantic_diagram.JPG?raw=True"></center>
 <caption><center>Semantic Image Segmentation pipeline</center></caption>
 
-The final ingredient
+This is the code I have added to the main function of `stylize.py` in the Neural Style Transfer [project](https://github.com/artanzand/neural_style_transfer/blob/main/stylize.py) to combine the results of the two. From prior to this code, we have computed and already have the variable `generated_image` as our output from NST. This is the same as the "Stylize Image" from the diagram above. Calling the `predict()` function on the content image will give the masked photo which is the multiplication of the content image with the predicted mask (0's and 1's). The reason I defined the output my predict function is more of a logistics problem as it is not possible to resize an integer tensor (the output mask is of shape 320x320).
+
+Instead of the 1 - Y function mentioned earlier to acquire the background mask I am filtering zeros of the masked_photo. The nice thing about this is that I don't need any further resizing to bring my background mask to the same shape as the generated_image (Stylized Image). Now that we have the background mask, all we need to do is mutliplying it by the generate_image. And to wrap it up, we will sum the two masked_images to create the final output.
+
+```python
+def main(content, style, save, similarity="balanced", epochs=500):
+    """ """
+    ...
+    # Create crop out of personage in the content image
+    # Image segmentation is done using U-Net architecture (size of (320, 320))
+    masked_photo = predict(content)
+    # resize to current stylized image
+    masked_photo = tf.image.resize(
+        masked_photo, [image_size, image_size], method="nearest"
+    )
+
+    # Create background mask
+    background_mask = tf.cast(masked_photo == 0, tf.float32)
+    masked_background = (
+        generated_image * background_mask
+    )  # photo mask is 0's and 1's
+
+    # Combine the two images (the two pieces complement eachother)
+    segmented_style = masked_background + masked_photo
+
+    # Resize stylized image to original size and save
+    seg_style_image = tensor_to_image(segmented_style)
+    seg_style_image = seg_style_image.resize((content_width, content_height))
+
+    seg_style_image.save(save + ".jpg")
+```
+
 <br>
 
 # Result and Final Thoughts
@@ -243,8 +278,11 @@ The final ingredient
 <center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/evolution.gif?raw=True"></center>
 <caption><center>Evolution of NST with Semantic Image Segmentation</center></caption>
 
-process improvement for computation efficiency
-Add more classes
+This is the animation of what the final product looks like. Although I am getting my desired output, I can see two further improvements for the project.
+
+1. Add more classes: It would be nice if the image segmentation could classify more objects. In the case of the initial inspiration image for example, it would have been nice if the user could select human and bicycle to be filtered out from the neural style transfer. This would be an easy improvement with changes in literally two words in the code (updating n_classes and changing the loss function to `SparseCategoricalCrossentropy()`) as mentioned in the previous section.  
+2. Reorder the pipeline: The way I am solving this problem is not the most computationaly efficient way. My current pipeline is that I am creating the stylized background, and then I apply the mask calculated from my segmentation model. It would have been computationally more efficient if I generated the mask first, applied the mask on the original image to freeze the human figure pixels, and then do the style transfer. The computational cost saving would be proporionate to the the count / size of human figures in a certain image.
+<br>
 
 ## References
 
