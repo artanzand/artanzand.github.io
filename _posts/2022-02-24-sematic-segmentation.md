@@ -3,7 +3,7 @@ layout: post
 title: Semantic Image Segmentation with U-Net
 author: Artan Zandian
 date: Feb 24, 2022
-excerpt: "In a second phase of my Neural Style Transfer model, I have applied Semantic Segmentation to exclude person figures from the style transfer. In this post, I will be going over the U-Net architecture and the project pipeline used to achieve this."
+excerpt: "In a second phase of my Neural Style Transfer model, I have applied semantic image segmentation to exclude person figures from the style transfer. In this post, I will be going over the U-Net architecture and the project pipeline used to achieve this."
 ---
 
 In a second phase of my Neural Style Transfer (NST) model (see [NST project](https://artanzand.github.io//neural-style-transfer/) and [repository](https://github.com/artanzand/neural_style_transfer)), I have applied Semantic Segmentation to exclude person figures from the style transfer (see [Image Segmentation repository](https://github.com/artanzand/image_segmentation_NST) for reproducible code). In this post, I will be going over the U-Net architecture and the project pipeline used to achieve this. This project is inspired by a stylized image of a child riding a bicycle which I came across with in a very recent research paper ([Kasten et al. (2021)](https://layered-neural-atlases.github.io/)) by Adobe Research team.
@@ -14,7 +14,7 @@ In a second phase of my Neural Style Transfer (NST) model (see [NST project](htt
 
 # Motivation
 
-So far, we have been able to created a stylized version of an image using Neural style Transfer (see this [post](https://artanzand.github.io//neural-style-transfer/) for a walkthrough of that project). This model works perfect if the intention is to stylize the whole image and where the partial details of the original image do not matter. A simple use case of this is for stylizing a scenary image. However, as shown in the example image below when human figures appear in a "content" image, the results of the generated stylized image are not satisfactory. To overcome this issue, our neural network pipeline needs to somehow learn where the people are in an image and cut them out.
+So far, we have been able to create a stylized version of an image using Neural style Transfer (see this [post](https://artanzand.github.io//neural-style-transfer/) for a walkthrough of that project). This model works perfect if the intention is to stylize the whole image and where the partial details of the original image do not matter. A simple use case of this is for stylizing a scenery image. However, as shown in the example image below when human figures appear in a "content" image, the results of the generated stylized image are not satisfactory. To overcome this issue, our neural network pipeline needs to somehow learn where the people are in an image and cut them out.
 <center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/nst_problem.JPG?raw=True"></center>
 <caption><center>Failure in application of NST on images containing figures</center></caption>
 <br>
@@ -26,18 +26,18 @@ Our main objective for this project is to find masks which would help isolate fi
 <caption><center>Figure and Background masks</center></caption>
 <br>
 
-The below diagrams shows the overall pipeline. We have two neural networks. Neural Style Transfer is in charge of creating stylized images which has already been modeled in my [previous project](https://artanzand.github.io//neural-style-transfer/), and Semantic Image Segmentation model, which we will walk through in this post, will be generating tensors of zeros and ones. The outputs of semantic segmentation will create the stylized background and the figure cutout when multiplied by the stylized and content images respectively. The final output is a summation of the two isolated pieces.
+The below diagram shows the overall pipeline. We have two neural networks. Neural Style Transfer is in charge of creating stylized images which has already been modeled in my [previous project](https://artanzand.github.io//neural-style-transfer/), and Semantic Image Segmentation model, which we will walk through in this post, will be generating tensors of zeros and ones. The outputs of semantic segmentation will create the stylized background and the figure cutout when multiplied by the stylized and content images respectively. The final output is a summation of the two isolated pieces.
 <center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/NST_segmentation_framework.JPG?raw=True"></center>
 <caption><center>Project pipeline</center></caption>
 <br>
 
 # Semantic Image Segmentation
 
-We will be building a special type of Convolutional Neural Networks (CNN) designed for quick and precise image segmentation. The predicted result of this network will be in shape of a label for every single pixel in an image. This is referred to as pixelwise prediction in the literature. This method of image classification is called semantic image classification and plays a critical role in many tasks including self-driving cars which demand a perfect understanding of the surounding environment so that they avoid other cars and people, or change lanes.
+We will be building a special type of Convolutional Neural Networks (CNN) designed for quick and precise image segmentation. The predicted result of this network will be in shape of a label for every single pixel in an image. This is referred to as pixelwise prediction in the literature. This method of image classification is called semantic image classification and plays a critical role in many tasks including self-driving cars which demand a perfect understanding of the surrounding environment so that they avoid other cars and people, or change lanes.
 
-A major source of confusion is the difference between object detection and image segmentation. The similarity is that both techniques intend to answer the question: "What objects are present in this image and what are the locations of thos objects?". The main difference is that the objective of object detection model like [YOLO](https://arxiv.org/abs/1506.02640) is to label objects by bounding boxes whereas semantic image segmentation aims to predict a pixel precise mask for each object in the image by labeling each pixel in the image with its corresponding class.
+A major source of confusion is the difference between object detection and image segmentation. The similarity is that both techniques intend to answer the question: "What objects are present in this image and what are the locations of those objects?". The main difference is that the objective of object detection model like [YOLO](https://arxiv.org/abs/1506.02640) is to label objects by bounding boxes whereas semantic image segmentation aims to predict a pixel precise mask for each object in the image by labeling each pixel in the image with its corresponding class.
 
-For reproducibility purposes and to allow for faster training of my model on the cloud, I have opted for a smaller-size [dataset](https://www.kaggle.com/nikhilroxtomar/person-segmentation) that would only label person figures. The technique can, however, be generalized to image segmentation for multiple classes, and in my post I will be referring to the respective changes in the general code and concept.
+For reproducibility purposes and to allow for faster training of my model on the cloud, I have opted for a smaller size [dataset](https://www.kaggle.com/nikhilroxtomar/person-segmentation) that would only label person figures. The technique can, however, be generalized to image segmentation for multiple classes, and in my post, I will be referring to the respective changes in the general code and concept.
 
 <br>
 
@@ -117,8 +117,8 @@ def encoder_block(inputs=None, n_filters=32, dropout=0, max_pooling=True):
 
 The decoder block takes in two arguments:  
 
-- `expansive_input` - The input tensor from the previous layer, and;
-- `contractive_input` - the input tensor from the previous skip layer in the encoder section  
+- `expansive_input` - The input tensor from the previous layer.
+- `contractive_input` - The input tensor from the previous skip layer in the encoder section.
 
 The number of filters will be the same as each corresponding encoder block. We will first apply transpose convolution on the `expansive_input`(the input tensor from the previous layer). We will then merge the output of the transpose convolutional layer with `contractive_input` using the `tf.concatenate()` function to create the skip connection. Skip connection is the step that allows for the capture of finer information from the earlier layers of the network where shape details were still present. We will apply two convolutional layers at the end of this block.
 
@@ -156,14 +156,14 @@ def decoder_block(expansive_input, contractive_input, n_filters=32):
 
 This is where the model blocks are put together by chaining encoders, connections, and decoders. We will need to identify the number of classes (`n_classes`) of the final output image. Connecting the inputs and outputs of each layer is not hard if we follow the U-Net diagram, but let's step out for a short minute to clarify what the number of classes should be and the desired shape of an output tensor.
 
-In semantic segmentation, we need as many masks as we have object classes. Classes in the output tensor are defined by channels. For example, if we have 4 classes, we will have an output with the same height and width as the input image, but with 4 channels with values of each cell in a channel representing the probabilities of that pixel belonging to that channel. The intuition is that when predicting we will get the `argmax()` of the pixels in the last dimension of the tensor (the dimesion with the four channels in our example) to come up with the final prediction for that pixel. For the case of my model because I was only interested in identifying the pixels containing human figures, I selected a dataset that would satisfy my objective. Therefore, I will have only one class (output channel) in my model.  
+In semantic segmentation, we need as many masks as we have object classes. Classes in the output tensor are defined by channels. For example, if we have 4 classes, we will have an output with the same height and width as the input image, but with 4 channels with values of each cell in a channel representing the probabilities of that pixel belonging to that channel. The intuition is that when predicting we will get the `argmax()` of the pixels in the last dimension of the tensor (the dimension with the four channels in our example) to come up with the final prediction for that pixel. For the case of my model because I was only interested in identifying the pixels containing human figures, I selected a dataset that would satisfy my objective. Therefore, I will have only one class (output channel) in my model.  
 
 <center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/classes.JPG?raw=True" width=400></center>
 <caption><center>Transformation of object classes</center></caption>
 
 Now let's go back to the model. The function is comprised of two sections. The first half is the encoding section where we use the `encoder_block`, and chain the first output of each block to the next one. We take a note of the second output of the `encoder_block` for later use in the decoder section. As per the paper recommendations we will be doubling the number of filters while MaxPooling in each block will divide the height and width by two. On the fifth block, also known as the Bottleneck (for obvious reasons!), we will be turning MaxPooling off since we will be entering the second section where we need to upsample.  
 
-Decoder blocks in the second section will be expanding the size of the image. This time we will chain the expanded output of the previous block with the second output from the corresponding encoder block. At each step, we will half the number of filter. `conv9` is a convolutional layer with `he_normal` initializer. At this stage, we will have an output with exactly the same shape as the input. Finally, on the output layer `conv10` we will use a convolutional layer with a kernel size of 1 to bring the number of channels to our desired number of classes (1 in case of this project).
+Decoder blocks in the second section will be expanding the size of the image. This time we will chain the expanded output of the previous block with the second output from the corresponding encoder block. At each step, we will half the number of filters. `conv9` is a convolutional layer with `he_normal` initializer. At this stage, we will have an output with the same shape as the input. Finally, on the output layer `conv10` we will use a convolutional layer with a kernel size of 1 to bring the number of channels to our desired number of classes (1 in case of this project).
 
 ```python
 def U_Net(input_size=(320, 320, 3), n_filters=32, n_classes=1):
@@ -210,7 +210,7 @@ def U_Net(input_size=(320, 320, 3), n_filters=32, n_classes=1):
     return model
 ```
 
-Next, we will instantiate the model and compile it. Adam is the optimizer of choice, but other optimizers work as well. For the loss function we use `BinaryCrossentropy` (since we have two classes of person as 1 or not person as 0), and set accuracy as our metric. Extra details about loading the data and fitting the model can be found in `train.py` in the [project repository](https://github.com/artanzand/image_segmentation_NST/blob/main/src/train.py).
+Next, we will instantiate the model and compile it. Adam is the optimizer of choice, but other optimizers work as well. For the loss function we use `BinaryCrossentropy` (since we have two classes of person as 1 or not person as 0) and set accuracy as our metric. Extra details about loading the data and fitting the model can be found in `train.py` in the [project repository](https://github.com/artanzand/image_segmentation_NST/blob/main/src/train.py).
 
 ```python
 unet = U_Net()
@@ -235,7 +235,7 @@ unet.compile(
 
 # Neural Style Transfer + Image Segmentation
 
-Now that we know how to get the ingredients i.e. the figure mask from Image Segmentation and the stylized image from Neural Style Transfer, it is time to put them together to create our improved generated image. The diagram below is our roadmap.
+Now that we know how to get the ingredients i.e., the figure mask from Image Segmentation and the stylized image from Neural Style Transfer, it is time to put them together to create our improved generated image. The diagram below is our roadmap.
 
 <center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/semantic_diagram.JPG?raw=True"></center>
 <caption><center>Semantic Image Segmentation pipeline</center></caption>
@@ -281,8 +281,8 @@ def main(content, style, save, similarity="balanced", epochs=500):
 
 This is the animation of what the final product looks like. Although I am getting my desired output, I can see two further improvements for the project.
 
-1. Add more classes: It would be nice if the image segmentation could classify more objects. In the case of the initial inspiration image for example, it would have been desired if the user had the option to filter out human, bicycle or both from the neural style transfer. This would be an easy improvement with changes in literally two words in the code (updating n_classes and changing the loss function to `SparseCategoricalCrossentropy()`) as mentioned in the previous section. This will require a longer runtime on GPU and also a larger memory size.
-2. Reorder the pipeline: The way I am solving this problem is not the most computationaly efficient way. In my current pipeline I am creating the stylized background, and then I apply the mask calculated from my image segmentation model. It would have been computationally more efficient if I generated the mask first, applied the mask on the original image to freeze the human figure pixels, and then do the style transfer only on the background image. The computational cost saving would be proporionate to the the count / size of human figures in a certain image.
+1. Add more classes: It would be nice if the image segmentation could classify more objects. In the case of the initial inspiration image for example, it would have been desired if the user had the option to filter out human, bicycle, or both from the neural style transfer. This would be an easy improvement with changes in literally two words in the code (updating n_classes and changing the loss function to `SparseCategoricalCrossentropy()`) as mentioned in the previous section. This will require a longer runtime on GPU and a larger memory size.
+2. Reorder the pipeline: The way I am solving this problem is not the most computationally efficient way. In my current pipeline I am creating the stylized background, and then I apply the mask calculated from my image segmentation model. It would have been computationally more efficient if I generated the mask first, applied the mask on the original image to freeze the human figure pixels, and then do the style transfer only on the background image. The computational cost saving would be proportionate to the count / size of human figures in a certain image.
 <br>
 
 ## References
