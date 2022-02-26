@@ -158,7 +158,8 @@ This is where the model blocks are put together by chaining encoders, connection
 
 In semantic segmentation, we need as many masks as we have object classes. Classes in the output tensor are defined by channels. For example, if we have 4 classes, we will have an output with the same height and width as the input image, but with 4 channels with values of each cell in a channel representing the probabilities of that pixel belonging to that channel. The intuition is that when predicting we will get the `argmax()` of the pixels in the last dimension of the tensor (the dimesion with the four channels in our example) to come up with the final prediction for that pixel. For the case of my model because I was only interested in identifying the pixels containing human figures, I selected a dataset that would satisfy my objective. Therefore, I will have only one class (output channel) in my model.  
 
-channel images
+<center><img src = "https://github.com/artanzand/artanzand.github.io/blob/master/_posts/img/classes.JPG?raw=True" width=400></center>
+<caption><center>Transformation of object classes</center></caption>
 
 Now let's go back to the model. The function is comprised of two sections. The first half is the encoding section where we use the `encoder_block`, and chain the first output of each block to the next one. We take a note of the second output of the `encoder_block` for later use in the decoder section. As per the paper recommendations we will be doubling the number of filters while MaxPooling in each block will divide the height and width by two. On the fifth block, also known as the Bottleneck (for obvious reasons!), we will be turning MaxPooling off since we will be entering the second section where we need to upsample.  
 
