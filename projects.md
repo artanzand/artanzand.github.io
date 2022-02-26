@@ -30,7 +30,7 @@ Tools used: Tensorflow, Keras, PIL, NVIDIA Jetson Nano, Podman, QEMU
 ### Canadian Heritage Funding
 
 ---
-This is a group project on a classification problem demonstrating my teamwork performance and knowledge of Data Science workflows, Github Actions, creating Docker images and formulating a reproducible analysis, model and report.  
+This is a group project on a classification problem demonstrating my teamwork performance and knowledge of Data Science workflows, Github Actions, creating Docker images and formulating a reproducible analysis, model, and report.  
 [Link to the project](https://github.com/artanzand/canadian_heritage_funding)
 
 <br>
@@ -38,7 +38,7 @@ This is a group project on a classification problem demonstrating my teamwork pe
 ### COVID-19 Testing – Online Booking Website
 
 ---
-This is a proof-of-concept website designed at the begining of the pandemic to reduce the pressure on Public Health call centres in Calgary, Alberta caused by higher than normal volumes related to COVID-19. The website serves three main purposes: Screening of the patients, booking a time for walk-in or drive thru testing appointments and storing the data in a SQL database, and modifying booked appointments.  
+This is a proof-of-concept website designed at the beginning of the pandemic to reduce the pressure on Public Health call centers in Calgary, Alberta caused by higher than normal volumes related to COVID-19. The website serves three main purposes: Screening of the patients, booking a time for walk-in or drive thru testing appointments and storing the data in a SQL database, and modifying booked appointments.  
 
 Languages used: Python, Flask, SQL, HTML, JavaScript, CSS
 [Link to the project](https://github.com/artanzand/Final-Project---CS50)
