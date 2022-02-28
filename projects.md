@@ -8,7 +8,7 @@ permalink: /projects/
 ### Generative Adversarial Network - Fake Houses
 
 ---
-In this project I implemented a Generative Adversarial Network (GAN) model to create synthetic thumbnail images of the exterior of houses that mimic real house images. This was a real-world problem introduced as a capstone project for UBC Master of Data Science program 2 years ago. My target was to recreate the results and simulate the problem by creating a house images [dataset](https://www.kaggle.com/ramiromep/house-thumbnail) through web scraping and to complete the project in two weeks rather than the original capstone timeline of two months.  
+Through implementation of a Generative Adversarial Network ([GAN](https://arxiv.org/abs/1406.2661)) model to create synthetic thumbnail images of houses. This was a real-world problem completed as a capstone project for UBC Master of Data Science program 2 years ago. My target was to recreate the results and simulate the problem by creating a house images [dataset](https://www.kaggle.com/ramiromep/house-thumbnail) through web scraping and to complete the project in two weeks rather than the original capstone timeline of two months.  
   
 Tools used: Pytorch, web scraping, Google Cloud Platform, Selenium  
 [Link to the project](https://github.com/artanzand/GAN_fake_houses)
