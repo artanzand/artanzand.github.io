@@ -12,13 +12,14 @@ Through implementation of a Generative Adversarial Network ([GAN](https://arxiv.
   
 Tools used: Pytorch, web scraping, Google Cloud Platform, Selenium  
 [Link to the project](https://github.com/artanzand/GAN_fake_houses)
+<br>
 
 ### Semantic Image Segmentation
 
 ---
 In a second phase of my Neural Style Transfer (NST) project, I have applied semantic image segmentation to exclude person figures from the style transfer. This project deploys a U-Net deep learning architecture capable of separating person figures from their background. The image segmentation pipeline is then stacked on the NST pipeline to augment the output image.  
   
-Tools used: Tensorflow, Google Cloud Platform, data augmentation, data loading and image preprocessing
+Tools used: Tensorflow, Google Cloud Platform, data augmentation, data loading and image preprocessing  
 [Link to the project post](https://artanzand.github.io//sematic-segmentation/)  
 [Link to the project](https://github.com/artanzand/image_segmentation_NST)  
   
