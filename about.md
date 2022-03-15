@@ -8,7 +8,7 @@ I am currently a graduate student in the UBC Master of Data Science program. If 
 <br>
 I consider myself a self-motivated professional with over 7 years of data mining, cleansing and analysis, KPI and feature engineering, visualization of data insights, and data-driven business optimization. I am seeking opportunities to advance professional experience in relation to the consulting and data science industries. My strong passion and curiosity for machine learning, deep learning, natural language processing, and research related applications keeps me going every day.
 
-You may find more information on my professional work experience [here]().
+You may find more information on my professional work experience [here](https://drive.google.com/file/d/1qieIYbHSv7YbXhnO78H1_FGrg7kwdQYT/view?usp=sharing).
 
 ### Technology
 
