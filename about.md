@@ -4,18 +4,21 @@ title: About
 permalink: /about/
 ---
 
-I am currently a graduate student in the UBC Master of Data Science program. If you are looking me up after June 2022, consider me graduated!  
-<br>
-I consider myself a self-motivated professional with over 7 years of data mining, cleansing and analysis, KPI and feature engineering, visualization of data insights, and data-driven business optimization. I am seeking opportunities to advance professional experience in relation to the consulting and data science industries. My strong passion and curiosity for machine learning, deep learning, natural language processing, and research related applications keeps me going every day.
 
-You may find more information on my professional work experience [here](https://drive.google.com/file/d/1qieIYbHSv7YbXhnO78H1_FGrg7kwdQYT/view?usp=sharing).
+I'm Artan, a senior Machine Learning Engineer, and my journey in the world of data and algorithms has been a dynamic one. With over 9 years of experience in data mining, analysis, and business optimization, I've honed my skills in feature engineering, visualizing data insights, and driving data-driven strategies by designing and implementing Proof of Concept (POC) projects. With my strong background in data science, I've been able to develop and deploy machine learning models to solve real-world problems.  
+<br>
+For the past 2 years, I've been deeply immersed in the captivating field of computer vision. What truly ignites my professional path is my unwavering passion for machine learning, deep learning, and research applications. Moreover, I'm an avid enthusiast of MLOps and have been heavily involved in the entire ML lifecycle.  
+<br>
+This blog is my platform to share insights, discoveries, and the latest trends in data science and AI, with a focus on computer vision and MLOps. Join me in this exploration as we decode the future of technology, one post at a time. Welcome to my blog, and let's embark on this exciting journey together.
+
+<br>
 
 ### Technology
 
-Experienced in essential technologies and languages such as Python, R, C/C++, Javascript, SQL, MongoDB, Scikit-learn, Tensorflow, and PyTorch.  
+Experienced in essential technologies and languages such as Python, R, C/C++, Javascript, SQL, MongoDB, Scikit-learn, Tensorflow, PyTorch, AWS, GCP and more.  
 
 <br>
 
 ### Contact me
 
-[Email](mailto:artanzand@yahoo.co.uk)  |   +1 (587) 707-7476
+[Email](mailto:artan.zdn@gmail.com)   |   +1 (587) 707-7476
